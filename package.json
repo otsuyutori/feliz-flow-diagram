@@ -1,0 +1,44 @@
+{
+    "private": true,
+    "engines": {
+        "node": "~16 || ~18",
+        "npm": "~8"
+    },
+    "scripts": {
+        "build": "NODE_ENV=Production webpack",
+        "build-dev": "NODE_ENV=Development webpack",
+        "serve": "ASPNETCORE_ENVIRONMENT=Production ./deploy/Server"
+    },
+    "dependencies": {
+        "@babel/preset-env": "^7.20.2",
+        "@babel/preset-react": "^7.18.6",
+        "@emotion/react": "^11.10.5",
+        "@emotion/styled": "^11.10.5",
+        "@mui/material": "^5.11.3",
+        "babel-loader": "^9.1.0",
+        "bulma": "^0.9.4",
+        "core-js": "^3.27.1",
+        "fable-compiler": "^2.13.0",
+        "fable-loader": "^2.1.9",
+        "fable-splitter": "^2.2.1",
+        "gsap": "^3.11.4",
+        "react": "^17.0.1",
+        "react-dom": "^17.0.1",
+        "react-youtube": "^10.1.0"
+    },
+    "devDependencies": {
+        "copy-webpack-plugin": "^10.0.0",
+        "css-loader": "^6.7.3",
+        "file-loader": "^6.2.0",
+        "html-webpack-plugin": "^5.5.0",
+        "mini-css-extract-plugin": "^2.4.5",
+        "remotedev": "^0.2.9",
+        "sass": "^1.43.4",
+        "sass-loader": "^12.3.0",
+        "source-map-loader": "^3.0.0",
+        "style-loader": "^3.3.1",
+        "webpack": "^5.64.2",
+        "webpack-cli": "^4.9.1",
+        "webpack-dev-server": "^4.5.0"
+    }
+}
