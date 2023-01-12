@@ -17,10 +17,11 @@ class Diagram extends React.Component {
       this._makeMap(this.nodes, this.nodeMap);
       this._makeMap(this.connections, this.connectionMap);
       this.dpRef = React.createRef();
+      this.connLayer = React.createRef();
     }
     prepareTarget(e){
       const dragTypes = {
-        diagram: 'div',
+        divcont: 'div',
         node: 'svg',
         connection: 'svg',
       }
@@ -31,15 +32,19 @@ class Diagram extends React.Component {
       }
       this.target = {
         element  : target,
-        dragType : dragTypes[dragData],
+        type : dragTypes[dragData],
       }
     }
     dragTarget(){
       if(this.target.type === 'div'){
         Tween.set(this.target.element, {
-          top: `+=${this.draggable.deltaY}`,
           left: `+=${this.draggable.deltaX}`,
+          top: `+=${this.draggable.deltaY}`,
         }); 
+        Tween.set(this.connLayer.current, {
+          left: `+=${this.draggable.deltaX}`,
+          top: `+=${this.draggable.deltaY}`,
+        });
       }else{
         Tween.set(this.target.element, {
           x: `+=${this.draggable.deltaX}`,
@@ -73,12 +78,12 @@ class Diagram extends React.Component {
       return (
         <>
           <div className="diagram-container" style={{overflow: 'hidden'}}>
-            <div className="diagram-canvas" drag-data="diagram">
-              <svg style={{position:'absolute', left:0, top:0, zIndex:0, width:'100%', height:'100%'}}>
-                <g className="connectionLayer"></g>
-                <circle className="dragProxy" ref={this.dpRef} cx={0} cy={0} r={1} fill={'none'}></circle>
+            <div className="diagram-canvas">
+              <svg ref={this.connLayer} style={{position:'absolute', left:0, top:0, zIndex:0, width:'100%', height:'100%'}}>
+                <g className="connections"></g>
+                <circle className="dragProxy" ref={this.dpRef} cx={0} cy={0} r={10} fill={'red'}></circle>
               </svg>
-              <div className="conatinerLayer" style={{position:'absolute', left:0, top:0, zIndex:1, width:'100%', height:'100%'}}>
+              <div className="conatiner" drag-data="divcont" style={{position:'absolute', left:0, top:0, zIndex:1, width:'100%', height:'100%'}}>
                 {this.nodes}
               </div>
             </div>

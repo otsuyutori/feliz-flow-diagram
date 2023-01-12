@@ -18,8 +18,8 @@ class DRNode extends React.Component {
   }
   render() {
     return (
-      <div className="dragcontainer" drag-data="node">
-        <div className="is-flex-direction-column is-align-content-center" data-drag="aaa">
+      <div className="dragcontainer" drag-data="node" style={{width : 'fit-content', height: 'fit-content'}}> 
+        <div className="is-flex-direction-column is-align-content-center" style={{width : 'fit-content', height: 'fit-content'}}>
           <div className="draggable">
             <svg className="port">
               <g className="input-field" transform="translate(0, 0)">
