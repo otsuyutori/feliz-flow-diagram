@@ -37,7 +37,7 @@ type Components =
     static member MUITextField(id: string, label: string, text : string, setText: string -> unit) = React.imported ()
 
     [<ReactComponent(import = "default", from = "./Components/node.jsx")>]
-    static member DRNode(key: string, _ref: IRefValue<obj>) = React.imported ()
+    static member DRNode(key: string) = React.imported ()
 
     [<ReactComponent(import = "default", from = "./Components/connection.jsx")>]
     static member Connection(key: string, node_out: string, node_in: string, _ref: IRefValue<obj>) = React.imported ()

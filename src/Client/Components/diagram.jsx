@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import { Tween } from "gsap/gsap-core";
 import { Draggable } from "gsap/Draggable";
 import "./flowdiagram.css"
+import { typographyVariant } from "@mui/system";
 
 gsap.registerPlugin(Draggable);
 
@@ -14,29 +15,37 @@ class Diagram extends React.Component {
       this.connections = props.connections;
       this.nodeMap = new Map();
       this.connectionMap = new Map();
-      this._makeMap(this.nodes, this.nodeMap);
-      this._makeMap(this.connections, this.connectionMap);
       this.dpRef = React.createRef();
       this.connLayer = React.createRef();
+      this.dragRef = null;
     }
     prepareTarget(e){
-      const dragTypes = {
-        divcont: 'div',
-        node: 'svg',
-        connection: 'svg',
-      }
       let target = e.target;
       let dragData = null
       while(!(dragData = target.getAttribute('drag-data'))){
         target = target.parentElement;
       }
+      const dragType = dragData.split(':')[0];
+      const dragId = dragData.split(':')[1];
+
+      switch(dragType){
+        case 'node':
+          this.dragRef = this.nodeMap.get(dragId);
+          break;
+        case 'connection':
+          this.dragRef = this.connectionMap.get(dragId);
+          break;
+        default:
+          break;
+      }
+
       this.target = {
         element  : target,
-        type : dragTypes[dragData],
+        type     : dragType,
       }
     }
     dragTarget(){
-      if(this.target.type === 'div'){
+      if(this.target.type === 'layer'){
         Tween.set(this.target.element, {
           left: `+=${this.draggable.deltaX}`,
           top: `+=${this.draggable.deltaY}`,
@@ -46,10 +55,7 @@ class Diagram extends React.Component {
           top: `+=${this.draggable.deltaY}`,
         });
       }else{
-        Tween.set(this.target.element, {
-          x: `+=${this.draggable.deltaX}`,
-          y: `+=${this.draggable.deltaY}`,
-        });
+        this.dragRef.update();
       }
     }
     stopDragging(){
@@ -70,6 +76,8 @@ class Diagram extends React.Component {
     }
     componentDidMount(){
       this._createDraggable();
+      this._makeMap(this.nodes, this.nodeMap);
+      this._makeMap(this.connections, this.connectionMap);
     }
     componentDidUpdate(){
       this._createDraggable();
@@ -80,10 +88,11 @@ class Diagram extends React.Component {
           <div className="diagram-container" style={{overflow: 'hidden'}}>
             <div className="diagram-canvas">
               <svg ref={this.connLayer} style={{position:'absolute', left:0, top:0, zIndex:0, width:'100%', height:'100%'}}>
-                <g className="connections"></g>
+                <g className="connections">
+                </g>
                 <circle className="dragProxy" ref={this.dpRef} cx={0} cy={0} r={10} fill={'red'}></circle>
               </svg>
-              <div className="conatiner" drag-data="divcont" style={{position:'absolute', left:0, top:0, zIndex:1, width:'100%', height:'100%'}}>
+              <div className="conatiner" drag-data="layer:container" style={{position:'absolute', left:0, top:0, zIndex:1, width:'100%', height:'100%'}}>
                 {this.nodes}
               </div>
             </div>
@@ -93,7 +102,7 @@ class Diagram extends React.Component {
     }
     _makeMap(fslist, map){
         this._getList(fslist, []).forEach(element => {
-            map.set(element.key, element.props._ref.current);
+            map.set(element.key, element.props._ref);
         });
     }
     _getList(node, carry){

@@ -11,14 +11,18 @@ class DRNode extends React.Component {
   constructor (props){
     super(props);
     this.id = props.$key;
+    this.ref = props._ref;
   }
   componentDidMount() {
   }
   componentDidUpdate() {
   }
+  update(){
+    console.log('update');
+  }
   render() {
     return (
-      <div className="dragcontainer" drag-data="node" style={{width : 'fit-content', height: 'fit-content'}}> 
+      <div className="dragcontainer" drag-data={'node:' + this.id} style={{width : 'fit-content', height: 'fit-content'}} ref={this.ref}> 
         <div className="is-flex-direction-column is-align-content-center" style={{width : 'fit-content', height: 'fit-content'}}>
           <div className="draggable">
             <svg className="port">

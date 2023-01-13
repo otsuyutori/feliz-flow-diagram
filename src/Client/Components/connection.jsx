@@ -417,8 +417,13 @@ class Connection extends React.Component {
   constructor (props){
     super(props);
     this.ref = props._ref;
+    this.id = props.$key;
+    this.input = React.createRef();
+    this.output = React.createRef();
+    this.path = React.createRef();
+    this.pathOut = React.createRef();
   }
-    init(port) {
+  init(port) {
        
     connectorLayer.appendChild(this.element);
     
@@ -442,17 +447,21 @@ class Connection extends React.Component {
       x: port.global.x,
       y: port.global.y
     });
-    
-    
+  }
+
+  elementDidMount() {
+  }
+
+  elementDidUpdate() {
   }
   
-  updatePath() {
+  update() {
     
-    const x1 = this.inputHandle._gsTransform.x;
-    const y1 = this.inputHandle._gsTransform.y;
+    const x1 = gasp.getProperty(this.inputHandle, 'x');
+    const y1 = gasp.getProperty(this.inputHandle, 'y');
     
-    const x4 = this.outputHandle._gsTransform.x;
-    const y4 = this.outputHandle._gsTransform.y;
+    const x4 = gasp.getProperty(this.outputHandle, 'x');
+    const y4 = gasp.getProperty(this.outputHandle, 'y');
     
     const dx = Math.abs(x1 - x4) * bezierWeight;
     
@@ -474,121 +483,109 @@ class Connection extends React.Component {
     this.pathOutline.setAttribute("d", data);
   }
   
-  updateHandle(port) {
+  // updateHandle(port) {
     
-    if (port === this.inputPort) {
+  //   if (port === this.inputPort) {
       
-      Tween.set(this.inputHandle, {
-        x: port.global.x,
-        y: port.global.y
-      });
+  //     Tween.set(this.inputHandle, {
+  //       x: port.global.x,
+  //       y: port.global.y
+  //     });
       
-    } else if (port === this.outputPort) {
+  //   } else if (port === this.outputPort) {
       
-      Tween.set(this.outputHandle, {
-        x: port.global.x,
-        y: port.global.y
-      });
-    }
+  //     Tween.set(this.outputHandle, {
+  //       x: port.global.x,
+  //       y: port.global.y
+  //     });
+  //   }
     
-    this.updatePath();    
-  }
+  //   this.updatePath();    
+  // }
   
-  placeHandle() {
+  // placeHandle() {
     
-    const skipShape = this.staticPort.parentNode.element;
+  //   const skipShape = this.staticPort.parentNode.element;
     
-    let hitPort;
+  //   let hitPort;
     
-    for (let shape of shapes) {
+  //   for (let shape of shapes) {
       
-      if (shape.element === skipShape) {
-        continue;
-      }
+  //     if (shape.element === skipShape) {
+  //       continue;
+  //     }
       
-      if (Draggable.hitTest(this.dragElement, shape.element)) {
+  //     if (Draggable.hitTest(this.dragElement, shape.element)) {
         
-        const ports = this.isInput ? shape.outputs : shape.inputs;
+  //       const ports = this.isInput ? shape.outputs : shape.inputs;
         
-        for (let port of ports) {
+  //       for (let port of ports) {
           
-          if (Draggable.hitTest(this.dragElement, port.portElement)) {
-            hitPort = port;
-            break;
-          }
-        }
+  //         if (Draggable.hitTest(this.dragElement, port.portElement)) {
+  //           hitPort = port;
+  //           break;
+  //         }
+  //       }
         
-        if (hitPort) {
-          break;
-        }
-      }
-    }
+  //       if (hitPort) {
+  //         break;
+  //       }
+  //     }
+  //   }
         
-    if (hitPort) {      
+  //   if (hitPort) {      
       
-      if (this.isInput) {
-        this.outputPort = hitPort;
-      } else {
-        this.inputPort = hitPort;
-      }
+  //     if (this.isInput) {
+  //       this.outputPort = hitPort;
+  //     } else {
+  //       this.inputPort = hitPort;
+  //     }
       
-      this.dragElement.setAttribute("data-drag", `${hitPort.id}:port`);
+  //     this.dragElement.setAttribute("data-drag", `${hitPort.id}:port`);
       
-      hitPort.addConnector(this);
-      this.updateHandle(hitPort);
+  //     hitPort.addConnector(this);
+  //     this.updateHandle(hitPort);
       
-    } else {
-      this.remove();
-    }
-  }
+  //   } else {
+  //     this.remove();
+  //   }
+  // }
   
-  remove() {
+  // remove() {
     
-    if (this.inputPort) {
-      this.inputPort.removeConnector(this);
-    }
+  //   if (this.inputPort) {
+  //     this.inputPort.removeConnector(this);
+  //   }
     
-    if (this.outputPort) {
-      this.outputPort.removeConnector(this);
-    }
+  //   if (this.outputPort) {
+  //     this.outputPort.removeConnector(this);
+  //   }
     
-    this.isSelected = false;
+  //   this.isSelected = false;
     
-    this.path.removeAttribute("d");
-    this.pathOutline.removeAttribute("d");
-    this.dragElement.removeAttribute("data-drag");
-    this.staticElement.removeAttribute("data-drag");     
+  //   this.path.removeAttribute("d");
+  //   this.pathOutline.removeAttribute("d");
+  //   this.dragElement.removeAttribute("data-drag");
+  //   this.staticElement.removeAttribute("data-drag");     
     
-    this.staticPort = null;    
-    this.inputPort = null;
-    this.outputPort = null;
-    this.dragElement = null;
-    this.staticElement = null;
+  //   this.staticPort = null;    
+  //   this.inputPort = null;
+  //   this.outputPort = null;
+  //   this.dragElement = null;
+  //   this.staticElement = null;
     
-    connectorLayer.removeChild(this.element);
-    connectorPool.push(this);
-  }
-  
-  onDrag() {    
-    this.updatePath();
-  }
-  
-  onDragEnd() {
-    this.placeHandle();
-  }
+  //   connectorLayer.removeChild(this.element);
+  //   connectorPool.push(this);
+  // }
   render(){
     return (
       <>
-        <svg ref={this.ref}>
-          <g id="connections-layer"></g>
-          <g class="connector">
-            <path class="connector-path-outline" />
-            <path class="connector-path" />
-            <circle class="connector-handle input-handle" cx="0" cy="0" r="4" />
-            <circle class="connector-handle output-handle" cx="0" cy="0" r="4" />
-          </g>
-          <circle id="drag-proxy" cx="0" cy="0" r="1" fill="none" />    
-        </svg>
+        <g class="connector" ref={this.ref}>
+          <path class="connector-path-outline" ref={this.pathOut} />
+          <path class="connector-path" ref={this.path}/>
+          <circle class="connector-handle input-handle" cx="0" cy="0" r="4" ref={this.input} drag-data={'out:' + this.id}/>
+          <circle class="connector-handle output-handle" cx="0" cy="0" r="4" ref={this.output} drag-data={'in:' + this.id}/>
+        </g>
       </>
       );
   }
