@@ -11,10 +11,12 @@ let Video (number : int, videoId:string) =
             Components.Diagram(
             [
                 Components.DRNode("1", React.useRef(None))
+                Components.DRNode("2", React.useRef(None))
+                Components.DRNode("3", React.useRef(None))
+                Components.DRNode("4", React.useRef(None))
+                Components.DRNode("5", React.useRef(None))
             ],
             [
-                Components.Connection("1", "1", "2", React.useRef(null))
-                Components.Connection("2", "4", "1", React.useRef(null))
             ]
             )
         ]

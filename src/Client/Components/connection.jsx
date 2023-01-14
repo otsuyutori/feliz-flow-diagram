@@ -414,54 +414,27 @@ gsap.registerPlugin(Draggable);
 
 // const diagram = new Diagram();
 class Connection extends React.Component {
-  constructor (props){
-    super(props);
-    this.ref = props._ref;
-    this.id = props.$key;
-    this.input = React.createRef();
-    this.output = React.createRef();
-    this.path = React.createRef();
-    this.pathOut = React.createRef();
-  }
-  init(port) {
-       
-    connectorLayer.appendChild(this.element);
-    
-    this.isInput = port.isInput;
-    
-    if (port.isInput) {
-      this.inputPort = port;      
-      this.dragElement = this.outputHandle;
-      this.staticElement = this.inputHandle;
-    } else {
-      this.outputPort = port;
-      this.dragElement = this.inputHandle;
-      this.staticElement = this.outputHandle;
-    }
-       
-    this.staticPort = port;    
-    this.dragElement.setAttribute("data-drag", `${this.id}:connector`);
-    this.staticElement.setAttribute("data-drag", `${port.id}:port`);       
-    
-    Tween.set([this.inputHandle, this.outputHandle], {
-      x: port.global.x,
-      y: port.global.y
-    });
+  constructor (){
+    super();
+    this.ref = React.createRef();
+    this.inputHandle = React.createRef();
+    this.outputHandle = React.createRef();
   }
 
-  elementDidMount() {
+  componentDidMount() {
+    this._createDraggable();
   }
 
   elementDidUpdate() {
   }
   
-  update() {
+  updatePath() {
     
-    const x1 = gasp.getProperty(this.inputHandle, 'x');
-    const y1 = gasp.getProperty(this.inputHandle, 'y');
+    const x1 = gasp.getProperty(this.inputHandle.current, 'x');
+    const y1 = gasp.getProperty(this.inputHandle.current, 'y');
     
-    const x4 = gasp.getProperty(this.outputHandle, 'x');
-    const y4 = gasp.getProperty(this.outputHandle, 'y');
+    const x4 = gasp.getProperty(this.outputHandle.current, 'x');
+    const y4 = gasp.getProperty(this.outputHandle.current, 'y');
     
     const dx = Math.abs(x1 - x4) * bezierWeight;
     
@@ -482,109 +455,69 @@ class Connection extends React.Component {
     this.path.setAttribute("d", data);
     this.pathOutline.setAttribute("d", data);
   }
+
+  init(element){
+    const x = gsap.getProperty(element, 'x');
+    const y = gsap.getProperty(element, 'y');
+    this.inputHandle.current.x=x;
+    this.inputHandle.current.y=y;
+    this.outputHandle.current.x=x;
+    this.outputHandle.current.y=y;
+    this.updatePath();
+  }
+
+  prepareTarget(e){
+    let target = e.target;
+    let dragData = null
+    while(!(dragData = target.getAttribute('drag-data'))){
+      target = target.parentElement;
+    }
+    this.target = {
+      element  : target,
+      type     : dragData,
+    }
+  }
+
+  dragTarget(){
+    if(this.target.type === "inputHandle" || this.target.type === "outputHandle"){
+      Tween.set(this.target.element, {
+        x: `+=${this.draggable.deltaX}`,
+        y: `+=${this.draggable.deltaY}`,
+      });
+      this.updatePath();
+    }
+  }
+
+  stopDragging(){
+    //this.target = null;
+  }
+
+  _createDraggable(){
+    const node = this.ref.current;
+    this.prepareTarget = this.prepareTarget.bind(this);
+    this.dragTarget = this.dragTarget.bind(this);
+    this.stopDragging = this.stopDragging.bind(this);
+    this.draggable = new Draggable(this.proxy.current, {
+      allowContextMenu: true,
+      trigger: node,
+      onPress: this.prepareTarget,
+      onDrag: this.dragTarget,
+      onDragEnd: this.stopDragging,
+    });
+  }
   
-  // updateHandle(port) {
-    
-  //   if (port === this.inputPort) {
-      
-  //     Tween.set(this.inputHandle, {
-  //       x: port.global.x,
-  //       y: port.global.y
-  //     });
-      
-  //   } else if (port === this.outputPort) {
-      
-  //     Tween.set(this.outputHandle, {
-  //       x: port.global.x,
-  //       y: port.global.y
-  //     });
-  //   }
-    
-  //   this.updatePath();    
-  // }
-  
-  // placeHandle() {
-    
-  //   const skipShape = this.staticPort.parentNode.element;
-    
-  //   let hitPort;
-    
-  //   for (let shape of shapes) {
-      
-  //     if (shape.element === skipShape) {
-  //       continue;
-  //     }
-      
-  //     if (Draggable.hitTest(this.dragElement, shape.element)) {
-        
-  //       const ports = this.isInput ? shape.outputs : shape.inputs;
-        
-  //       for (let port of ports) {
-          
-  //         if (Draggable.hitTest(this.dragElement, port.portElement)) {
-  //           hitPort = port;
-  //           break;
-  //         }
-  //       }
-        
-  //       if (hitPort) {
-  //         break;
-  //       }
-  //     }
-  //   }
-        
-  //   if (hitPort) {      
-      
-  //     if (this.isInput) {
-  //       this.outputPort = hitPort;
-  //     } else {
-  //       this.inputPort = hitPort;
-  //     }
-      
-  //     this.dragElement.setAttribute("data-drag", `${hitPort.id}:port`);
-      
-  //     hitPort.addConnector(this);
-  //     this.updateHandle(hitPort);
-      
-  //   } else {
-  //     this.remove();
-  //   }
-  // }
-  
-  // remove() {
-    
-  //   if (this.inputPort) {
-  //     this.inputPort.removeConnector(this);
-  //   }
-    
-  //   if (this.outputPort) {
-  //     this.outputPort.removeConnector(this);
-  //   }
-    
-  //   this.isSelected = false;
-    
-  //   this.path.removeAttribute("d");
-  //   this.pathOutline.removeAttribute("d");
-  //   this.dragElement.removeAttribute("data-drag");
-  //   this.staticElement.removeAttribute("data-drag");     
-    
-  //   this.staticPort = null;    
-  //   this.inputPort = null;
-  //   this.outputPort = null;
-  //   this.dragElement = null;
-  //   this.staticElement = null;
-    
-  //   connectorLayer.removeChild(this.element);
-  //   connectorPool.push(this);
-  // }
   render(){
+    console.log("now rendering...");
     return (
       <>
-        <g class="connector" ref={this.ref}>
+        <g class="connection" ref={this.ref} drag-data="connection">
           <path class="connector-path-outline" ref={this.pathOut} />
           <path class="connector-path" ref={this.path}/>
-          <circle class="connector-handle input-handle" cx="0" cy="0" r="4" ref={this.input} drag-data={'out:' + this.id}/>
-          <circle class="connector-handle output-handle" cx="0" cy="0" r="4" ref={this.output} drag-data={'in:' + this.id}/>
+          <circle class="connector-handle input-handle" cx="0" cy="0" r="4" ref={this.inputHandle} drag-data="inputHandle"/>
+          <circle class="connector-handle output-handle" cx="0" cy="0" r="4" ref={this.outputHandle} drag-data="outputHandle"/>
+        </g>
+        <g>
+          <circle cx={0} cy={0} r={10} ref={this.proxy}></circle>
         </g>
       </>
       );
