@@ -19,6 +19,22 @@ class Diagram extends React.Component {
       this.connLayer = React.createRef();
       this.dragRef = null;
     }
+    testFunc(){
+      console.log(this);
+    }
+
+    updateHandle(node){
+
+    }
+
+    assignPort(connection){
+
+    }
+
+    resignPort(){
+
+    }
+
     prepareTarget(e){
       let target = e.target;
       let dragData = null
@@ -61,18 +77,18 @@ class Diagram extends React.Component {
     stopDragging(){
       //this.target = null;
     }
-    _createDraggable(){
-      const canvas = document.querySelector('.diagram-canvas');
-      this.prepareTarget = this.prepareTarget.bind(this);
-      this.dragTarget = this.dragTarget.bind(this);
-      this.stopDragging = this.stopDragging.bind(this);
-      this.draggable = new Draggable(this.dpRef.current, {
-        allowContextMenu: true,
-        trigger: canvas,
-        onPress: this.prepareTarget,
-        onDrag: this.dragTarget,
-        onDragEnd: this.stopDragging,
-      });
+    // _createDraggable(){
+    //   const canvas = document.querySelector('.diagram-canvas');
+    //   this.prepareTarget = this.prepareTarget.bind(this);
+    //   this.dragTarget = this.dragTarget.bind(this);
+    //   this.stopDragging = this.stopDragging.bind(this);
+    //   this.draggable = new Draggable(this.dpRef.current, {
+    //     allowContextMenu: true,
+    //     trigger: canvas,
+    //     onPress: this.prepareTarget,
+    //     onDrag: this.dragTarget,
+    //     onDragEnd: this.stopDragging,
+    //   });
     }
     componentDidMount(){
       this._createDraggable();
@@ -89,6 +105,7 @@ class Diagram extends React.Component {
             <div className="diagram-canvas">
               <svg ref={this.connLayer} style={{position:'absolute', left:0, top:0, zIndex:0, width:'100%', height:'100%'}}>
                 <g className="connections">
+                  {this.connections}
                 </g>
                 <circle className="dragProxy" ref={this.dpRef} cx={0} cy={0} r={10} fill={'red'}></circle>
               </svg>
@@ -102,7 +119,13 @@ class Diagram extends React.Component {
     }
     _makeMap(fslist, map){
         this._getList(fslist, []).forEach(element => {
-            map.set(element.key, element.props._ref);
+          //dep inj?
+            const newElem = React.cloneElement(element, {...element.props,
+              updateHandle: this.updateHandle.bind(this),
+              assignPort: this.assignPort.bind(this),
+              resignPort: this.resignPort.bind(this),
+            });
+            map.set(newElem.key, newElem.props._ref);
         });
     }
     _getList(node, carry){
