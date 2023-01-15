@@ -22,7 +22,7 @@ class Connection extends React.Component {
     }
   }
   
-  updatePath() {
+  update() {
     const input = this.inputHandle.current;
     const output = this.outputHandle.current;
     const igsx = parseFloat(gsap.getProperty(input, 'cx'));
@@ -53,24 +53,49 @@ class Connection extends React.Component {
     
     this.path.current.setAttribute("d", data);
     this.pathOut.current.setAttribute("d", data);
-    if(Math.min(p1x, p4x) < 0){
-      this.setState({vbx: Math.min(p1x, p4x)});
-    }
-    if(Math.min(p1y, p4y) < 0){
-      this.setState({vby: Math.min(p1y, p4y)});
-    }
   }
 
-  init(element){
-    const x = element.getAttribute('cx') ?? 0;
-    const y = element.getAttribute('cy') ?? 0;
+  init(fromElement, toElement){
     const input = this.inputHandle.current;
     const output = this.outputHandle.current;
+    if(fromElement === null && toElement === null){
+      throw new Error("'from' 'to' both are null");
+    }
+    let r = 0;
+    let rect = null;
+    if(fromElement && toElement){
+      r = parseFloat(fromElement.getAttribute('r') ?? 0)
+      
+      input.setAttribute('cx', fromElement.getBoundingClientRect().x + r);
+      input.setAttribute('cy', fromElement.getBoundingClientRect().y + r);
+      output.setAttribute('cx', toElement.getBoundingClientRect().x + r);
+      output.setAttribute('cy', toElement.getBoundingClientRect().y + r);
+      this.update();
+      return null;
+    }
+
+    let x = 0;
+    let y = 0;
+    let res = null;
+    
+    if(fromElement){
+      r = parseFloat(fromElement.getAttribute('r') ?? 0)
+      x = fromElement.getBoundingClientRect().x + r;
+      y = fromElement.getBoundingClientRect().y + r;
+      res = this.outputHandle.current;
+    }
+    if(toElement){
+      r = parseFloat(toElement.getAttribute('r') ?? 0)
+      x = toElement.getBoundingClientRect().x + r;
+      y = toElement.getBoundingClientRect().y + r;
+      res = this.inputHandle.current;
+    }
     input.setAttribute('cx', x);
     input.setAttribute('cy', y);
     output.setAttribute('cx', x);
     output.setAttribute('cy', y);
-    this.updatePath();
+    this.update();
+    return res;
   }
   
   render(){

@@ -36,11 +36,5 @@ type Components =
     [<ReactComponent(import = "MUITextField", from = "./Components/textfield.jsx")>]
     static member MUITextField(id: string, label: string, text : string, setText: string -> unit) = React.imported ()
 
-    [<ReactComponent(import = "default", from = "./Components/node.jsx")>]
-    static member DRNode(key: string, _ref: IRefValue<option<obj>>) = React.imported ()
-
-    [<ReactComponent(import = "default", from = "./Components/connection.jsx")>]
-    static member Connection(key: string, node_out: string, node_in: string, _ref: IRefValue<obj>) = React.imported ()
-
     [<ReactComponent(import = "default", from = "./Components/diagram.jsx")>]
-    static member Diagram(nodes: ReactElement list, connections: ReactElement list) = React.imported ()
+    static member Diagram(key: string) = React.imported ()

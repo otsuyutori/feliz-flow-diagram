@@ -5,19 +5,26 @@ import { Tween } from "gsap/gsap-core";
 import { Draggable } from "gsap/Draggable";
 import "./flowdiagram.css"
 import { typographyVariant } from "@mui/system";
+import Node from "./node.jsx"
+import Connection from "./connection.jsx"
 
 gsap.registerPlugin(Draggable);
 
 class Diagram extends React.Component {
     constructor (props){
       super(props);
-      this.nodes = props.nodes;
-      this.connections = props.connections;
+      this.key = props.$key;
+      this.connections = [];
+      this.nodes = ["1","2","3"];
       this.nodeMap = new Map();
       this.connectionMap = new Map();
+      this.portMap = new Map();
       this.dpRef = React.createRef();
       this.connLayer = React.createRef();
       this.dragRef = null;
+      this.state = {
+        connections: [],
+      };
     }
     testFunc(){
       console.log(this);
@@ -31,12 +38,16 @@ class Diagram extends React.Component {
 
     }
 
+    createConnection(from, to){
+      const newConn = new Connection();
+      this.setState({connections:[...this.state.connections, newConn]});
+      return [newConn, newConn.init(from, to)];
+    }
+
     resignPort(){
 
     }
     componentDidMount(){
-      this._makeMap(this.nodes, this.nodeMap);
-      this._makeMap(this.connections, this.connectionMap);
     }
     componentDidUpdate(){
     }
@@ -45,14 +56,21 @@ class Diagram extends React.Component {
         <>
           <div className="diagram-container" style={{overflow: 'hidden'}}>
             <div className="diagram-canvas">
+              <div className="conatiner" drag-data="layer:container" style={{position:'absolute', left:0, top:0, zIndex:1, width:'100%', height:'100%'}}>
+                {this.nodes.map((id) =>{
+                    return(
+                      <Node key={id} api={{createConnection : this.createConnection.bind(this)}}/>
+                    )
+                })}
+              </div>
               <svg ref={this.connLayer} style={{position:'absolute', left:0, top:0, zIndex:0, width:'100%', height:'100%'}}>
                 <g className="connections">
+                {this.state.connections.map((conn) =>{
+                  return conn.render()
+                })}
                 </g>
                 <circle className="dragProxy" ref={this.dpRef} cx={0} cy={0} r={10} fill={'red'}></circle>
               </svg>
-              <div className="conatiner" drag-data="layer:container" style={{position:'absolute', left:0, top:0, zIndex:1, width:'100%', height:'100%'}}>
-                {this.nodes}
-              </div>
             </div>
           </div>
         </>
@@ -61,11 +79,6 @@ class Diagram extends React.Component {
     _makeMap(fslist, map){
         this._getList(fslist, []).forEach(element => {
           //dep inj?
-            const newElem = React.cloneElement(element, {...element.props,
-              updateHandle: this.updateHandle.bind(this),
-              assignPort: this.assignPort.bind(this),
-              resignPort: this.resignPort.bind(this),
-            });
             map.set(newElem.key, newElem.props._ref);
         });
     }
@@ -75,8 +88,8 @@ class Diagram extends React.Component {
         }
         else
         {
-            carry.push(node.head);
-            return this._getList(node.tail, carry);
+          carry.push(node.head);
+          return this._getList(node.tail, carry);
         }
     }
   }

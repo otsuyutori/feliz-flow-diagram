@@ -4,17 +4,16 @@ import { gsap } from "gsap";
 import { Tween } from "gsap/gsap-core";
 import { Draggable } from "gsap/Draggable";
 import "./flowdiagram.css"
-import Connection from "./connection.jsx"
+
 
 gsap.registerPlugin(Draggable);
 
-class DRNode extends React.Component {
+class Node extends React.Component {
   constructor (props){
     super(props);
+    this.ref = React.createRef();
     this.id = props.$key;
-    this.ref = props._ref;
-    this.updateHandle = props.updateHandle;
-    this.createConnection = props.createConnection;
+    this.api = props.api;
     this.draggable = null;
     this.outPort = React.createRef();
     this.inPort = React.createRef();
@@ -38,33 +37,33 @@ class DRNode extends React.Component {
     <>
       <div className="container" drag-data="base" style={{width : 'fit-content', height: 'fit-content'}} ref={this.ref}> 
         <div className="is-flex-direction-column is-align-content-center" style={{width : 'fit-content', height: 'fit-content'}}>
+          <svg style={{position:'absolute'}}>
+            {this.state.connections.map((conn) =>{
+              return conn.render()
+            })}
+          </svg>
+          <svg className="port" style={{position:'absolute'}}>
+            <g className="input-field" transform="translate(0, 0)" drag-data="inPort">
+              <g className="port">
+                <circle className="port-outer" cx="5" cy="10" r="7.5"/>
+                <circle className="port-inner" cx="5" cy="10" r="5"/>
+                <circle className="port-scrim" cx="5" cy="10" r="7.5" ref={this.inPort}/>
+              </g>
+              <text className="port-label" x="25" y="14">Input</text>
+            </g>
+            <g className="output-field" transform="translate(0, 0)" drag-data="outPort"  >
+              <g className="port">
+                <circle className="port-outer" cx="105" cy="10" r="7.5"/>
+                <circle className="port-inner" cx="105" cy="10" r="5"/>
+                <circle className="port-scrim" cx="105" cy="10" r="7.5" ref={this.outPort}/>
+              </g>
+              <text className="port-label" x="20" y="14">Output</text>
+            </g>
+            <g>
+              <circle cx={0} cy={0} r={10} ref={this.proxy}></circle>
+            </g>
+          </svg>
           <div className="draggable">
-            <svg style={{position:'absolute', width:100, height:100}}>
-              {this.state.connections.map((conn) =>{
-                return conn.render()
-              })}
-            </svg>
-            <svg className="port" style={{position:'absolute'}}>
-              <g className="input-field" transform="translate(0, 0)" drag-data="inPort">
-                <g className="port">
-                  <circle className="port-outer" cx="10" cy="10" r="7.5"/>
-                  <circle className="port-inner" cx="10" cy="10" r="5"/>
-                  <circle className="port-scrim" cx="10" cy="10" r="7.5" ref={this.inPort}/>
-                </g>
-                <text className="port-label" x="25" y="14">Input</text>
-              </g>
-              <g className="output-field" transform="translate(0, 60)" drag-data="outPort"  >
-                <g className="port">
-                  <circle className="port-outer" cx="70" cy="10" r="7.5"/>
-                  <circle className="port-inner" cx="70" cy="10" r="5"/>
-                  <circle className="port-scrim" cx="70" cy="10" r="7.5" ref={this.outPort}/>
-                </g>
-                <text className="port-label" x="20" y="14">Output</text>
-              </g>
-              <g>
-                <circle cx={0} cy={0} r={10} ref={this.proxy}></circle>
-              </g>
-            </svg>
           </div>
           <div className="description">
             これは説明
@@ -81,24 +80,19 @@ class DRNode extends React.Component {
     while(!(dragData = target.getAttribute('drag-data'))){
       target = target.parentElement;
     }
+    const [type, id] = dragData.split(":");
     this.target = {
+      object : null,
       element  : target,
-      type     : dragData,
+      type     : type,
+      id: id,
     }
 
     if(this.target.type === 'outPort'){
-      const newConn = new Connection();
-      this.setState({connections:[...this.state.connections, newConn]});
-      newConn.init(this.outPort.current);
-      this.currentConnection = newConn;
-      this.target.element = newConn.inputHandle.current;
+      [this.target.object, this.target.element] = this.api.createConnection(null ,this.outPort.current);
     }
     if(this.target.type === 'inPort'){
-      const newConn = new Connection();
-      this.setState({connections:[...this.state.connections, newConn]})
-      newConn.init(this.inPort.current);
-      this.currentConnection = newConn;
-      this.target.element = newConn.outputHandle.current;
+      [this.target.object, this.target.element] = this.api.createConnection(this.inPort.current,null);
     }
   }
 
@@ -115,8 +109,8 @@ class DRNode extends React.Component {
         cx: `+=${this.draggable.deltaX}`,
         cy: `+=${this.draggable.deltaY}`,
       });
-      this.currentConnection.updatePath();
     }
+    this.target.object?.update();
   }
 
   stopDragging(){
@@ -129,7 +123,7 @@ class DRNode extends React.Component {
     this.stopDragging = this.stopDragging.bind(this);
     this.draggable = new Draggable(this.proxy.current, {
       allowContextMenu: true,
-      trigger: [this.ref.current, this.inPort.current, this.outPort.current],
+      trigger: [this.ref.current ,this.inPort.current, this.outPort.current],
       onPress: this.prepareTarget,
       onDrag: this.dragTarget,
       onDragEnd: this.stopDragging,
@@ -137,7 +131,7 @@ class DRNode extends React.Component {
   }
 }
 
-export default DRNode
+export default Node
 
 // export const DRNode = () => {
 //   const dragTarget = useRef(null);
