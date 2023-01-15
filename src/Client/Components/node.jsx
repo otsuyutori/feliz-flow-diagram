@@ -22,9 +22,22 @@ class Node extends React.Component {
     this.state = {
       connections: [],
     };
+    this.connections = {
+      in:[],
+      out:[],
+    }
+
   }
   componentDidMount() {
     this._createDraggable();
+    this.api.registerPort({
+      object: this,
+      element: this.outPort.current,
+    });
+    this.api.registerPort({
+      object: this,
+      element: this.inPort.current,
+    });
   }
   componentDidUpdate() {
 //    this._createDraggable();
@@ -89,10 +102,12 @@ class Node extends React.Component {
     }
 
     if(this.target.type === 'outPort'){
-      [this.target.object, this.target.element] = this.api.createConnection(null ,this.outPort.current);
+      [this.target.object, this.target.element] = this.api.createConnection(this.outPort.current, null);
+      this.connections.out.push(this.target.object);
     }
     if(this.target.type === 'inPort'){
-      [this.target.object, this.target.element] = this.api.createConnection(this.inPort.current,null);
+      [this.target.object, this.target.element] = this.api.createConnection(null, this.inPort.current);
+      this.connections.in.push(this.target.object);
     }
   }
 
@@ -102,6 +117,20 @@ class Node extends React.Component {
         x: `+=${this.draggable.deltaX}`,
         y: `+=${this.draggable.deltaY}`,
       });
+      this.connections.out.forEach((conn) => {
+        Tween.set(conn.inputHandle.current, {
+          cx: `+=${this.draggable.deltaX}`,
+          cy: `+=${this.draggable.deltaY}`,
+        });
+        conn.update();
+      })
+      this.connections.in.forEach((conn) => {
+        Tween.set(conn.outputHandle.current, {
+          cx: `+=${this.draggable.deltaX}`,
+          cy: `+=${this.draggable.deltaY}`,
+        });
+        conn.update();
+      })
     }
     if(this.target.type === 'inPort' || this.target.type === 'outPort'){
       console.log(this.target.type);
@@ -114,7 +143,25 @@ class Node extends React.Component {
   }
 
   stopDragging(){
-    //this.target = null;
+    let result = null;
+    if(this.target.type === 'inPort' || this.target.type === 'outPort'){
+      result = this.api.hitTest(this.target.element)
+    }
+    if(result){
+      result.attachConnection(this.target.object, this.target.element);
+    }
+  }
+
+  attachConnection(conn, handle){
+    const[type, _] = handle.getAttribute("drag-data")?.split(":");
+    if(type === "inputHandle"){
+      conn.attach(handle, null);
+      this.connections.out.push(conn);
+    }
+    if(type === "outputHandle"){
+      conn.attach(null, handle);
+      this.connections.in.push(conn);
+    }
   }
 
   _createDraggable(){

@@ -15,6 +15,7 @@ class Diagram extends React.Component {
       super(props);
       this.key = props.$key;
       this.connections = [];
+      this.ports = [];
       this.nodes = ["1","2","3"];
       this.nodeMap = new Map();
       this.connectionMap = new Map();
@@ -26,16 +27,9 @@ class Diagram extends React.Component {
         connections: [],
       };
     }
-    testFunc(){
-      console.log(this);
-    }
 
-    updateHandle(node){
-
-    }
-
-    assignPort(connection){
-
+    registerPort(obj){
+      this.ports.push(obj);
     }
 
     createConnection(from, to){
@@ -44,9 +38,15 @@ class Diagram extends React.Component {
       return [newConn, newConn.init(from, to)];
     }
 
-    resignPort(){
-
+    hitTest(element){
+      for(let port of this.ports){
+        if(Draggable.hitTest(element, port.element)){
+          return port.object;
+        }
+      }
+      return null;
     }
+
     componentDidMount(){
     }
     componentDidUpdate(){
@@ -59,7 +59,7 @@ class Diagram extends React.Component {
               <div className="conatiner" drag-data="layer:container" style={{position:'absolute', left:0, top:0, zIndex:1, width:'100%', height:'100%'}}>
                 {this.nodes.map((id) =>{
                     return(
-                      <Node key={id} api={{createConnection : this.createConnection.bind(this)}}/>
+                      <Node key={id} api={{createConnection : this.createConnection.bind(this), registerPort:this.registerPort.bind(this) ,hitTest: this.hitTest.bind(this)}}/>
                     )
                 })}
               </div>

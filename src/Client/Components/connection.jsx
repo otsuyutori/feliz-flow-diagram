@@ -25,15 +25,15 @@ class Connection extends React.Component {
   update() {
     const input = this.inputHandle.current;
     const output = this.outputHandle.current;
-    const igsx = parseFloat(gsap.getProperty(input, 'cx'));
-    const igsy = parseFloat(gsap.getProperty(input, 'cy'));
-    const x1 = igsx;
-    const y1 = igsy;
-
     const ogsx = parseFloat(gsap.getProperty(output, 'cx'));
     const ogsy = parseFloat(gsap.getProperty(output, 'cy'));
-    const x4 = ogsx;
-    const y4 = ogsy;
+    const igsx = parseFloat(gsap.getProperty(input, 'cx'));
+    const igsy = parseFloat(gsap.getProperty(input, 'cy'));
+    const x1 = ogsx;
+    const y1 = ogsy;
+
+    const x4 = igsx;
+    const y4 = igsy;
   
     const dx = Math.abs(x1 - x4) * this.bezierWeight;
     
@@ -97,6 +97,51 @@ class Connection extends React.Component {
     this.update();
     return res;
   }
+
+  attach(fromElement, toElement){
+    const input = this.inputHandle.current;
+    const output = this.outputHandle.current;
+    if(fromElement === null && toElement === null){
+      throw new Error("'from' 'to' both are null");
+    }
+    let r = 0;
+    let rect = null;
+    if(fromElement && toElement){
+      r = parseFloat(fromElement.getAttribute('r') ?? 0)
+      
+      input.setAttribute('cx', fromElement.getBoundingClientRect().x + r);
+      input.setAttribute('cy', fromElement.getBoundingClientRect().y + r);
+      output.setAttribute('cx', toElement.getBoundingClientRect().x + r);
+      output.setAttribute('cy', toElement.getBoundingClientRect().y + r);
+      this.update();
+      return;
+    }
+
+    let x = 0;
+    let y = 0;
+    
+    if(fromElement){
+      r = parseFloat(fromElement.getAttribute('r') ?? 0)
+      x = fromElement.getBoundingClientRect().x + r;
+      y = fromElement.getBoundingClientRect().y + r;
+      
+      input.setAttribute('cx', x);
+      input.setAttribute('cy', y);
+      this.update();
+      return;
+    }
+    if(toElement){
+      r = parseFloat(toElement.getAttribute('r') ?? 0)
+      x = toElement.getBoundingClientRect().x + r;
+      y = toElement.getBoundingClientRect().y + r;
+      
+      output.setAttribute('cx', x);
+      output.setAttribute('cy', y);
+      this.update();
+      return;
+    }
+  }
+
   
   render(){
     console.log("now rendering...");
