@@ -16,18 +16,25 @@ class Connection extends React.Component {
     this.path = React.createRef();
     this.pathOut = React.createRef();
     this.bezierWeight = 0.68;
+    this.state ={
+      vbx: 0,
+      vby: 0,
+    }
   }
   
   updatePath() {
     const input = this.inputHandle.current;
     const output = this.outputHandle.current;
+    const igsx = parseFloat(gsap.getProperty(input, 'cx'));
+    const igsy = parseFloat(gsap.getProperty(input, 'cy'));
+    const x1 = igsx;
+    const y1 = igsy;
 
-    const x1 = input.getAttribute('cx');
-    const y1 = input.getAttribute('cy');
-    
-    const x4 = output.getAttribute('cx');
-    const y4 = output.getAttribute('cy');
-    
+    const ogsx = parseFloat(gsap.getProperty(output, 'cx'));
+    const ogsy = parseFloat(gsap.getProperty(output, 'cy'));
+    const x4 = ogsx;
+    const y4 = ogsy;
+  
     const dx = Math.abs(x1 - x4) * this.bezierWeight;
     
     const p1x = x1;
@@ -46,11 +53,17 @@ class Connection extends React.Component {
     
     this.path.current.setAttribute("d", data);
     this.pathOut.current.setAttribute("d", data);
+    if(Math.min(p1x, p4x) < 0){
+      this.setState({vbx: Math.min(p1x, p4x)});
+    }
+    if(Math.min(p1y, p4y) < 0){
+      this.setState({vby: Math.min(p1y, p4y)});
+    }
   }
 
   init(element){
-    const x = element.getAttribute('x') ?? 0;
-    const y = element.getAttribute('y') ?? 0;
+    const x = element.getAttribute('cx') ?? 0;
+    const y = element.getAttribute('cy') ?? 0;
     const input = this.inputHandle.current;
     const output = this.outputHandle.current;
     input.setAttribute('cx', x);

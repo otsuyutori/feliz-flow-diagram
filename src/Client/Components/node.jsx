@@ -39,31 +39,31 @@ class DRNode extends React.Component {
       <div className="container" drag-data="base" style={{width : 'fit-content', height: 'fit-content'}} ref={this.ref}> 
         <div className="is-flex-direction-column is-align-content-center" style={{width : 'fit-content', height: 'fit-content'}}>
           <div className="draggable">
-            <svg className="port">
-              <g className="input-field" transform="translate(0, 0)" ref={this.inPort} drag-data="inPort">
+            <svg style={{position:'absolute', width:100, height:100}}>
+              {this.state.connections.map((conn) =>{
+                return conn.render()
+              })}
+            </svg>
+            <svg className="port" style={{position:'absolute'}}>
+              <g className="input-field" transform="translate(0, 0)" drag-data="inPort">
                 <g className="port">
-                  <circle className="port-outer" cx="10" cy="10" r="7.5" />
-                  <circle className="port-inner" cx="10" cy="10" r="5" />
-                  <circle className="port-scrim" cx="10" cy="10" r="7.5" />
+                  <circle className="port-outer" cx="10" cy="10" r="7.5"/>
+                  <circle className="port-inner" cx="10" cy="10" r="5"/>
+                  <circle className="port-scrim" cx="10" cy="10" r="7.5" ref={this.inPort}/>
                 </g>
                 <text className="port-label" x="25" y="14">Input</text>
               </g>
-              <g className="output-field" transform="translate(0, 60)" ref={this.outPort} drag-data="outPort">
+              <g className="output-field" transform="translate(0, 60)" drag-data="outPort"  >
                 <g className="port">
-                  <circle className="port-outer" cx="70" cy="10" r="7.5" />
-                  <circle className="port-inner" cx="70" cy="10" r="5" />
-                  <circle className="port-scrim" cx="70" cy="10" r="7.5" />
+                  <circle className="port-outer" cx="70" cy="10" r="7.5"/>
+                  <circle className="port-inner" cx="70" cy="10" r="5"/>
+                  <circle className="port-scrim" cx="70" cy="10" r="7.5" ref={this.outPort}/>
                 </g>
                 <text className="port-label" x="20" y="14">Output</text>
               </g>
               <g>
                 <circle cx={0} cy={0} r={10} ref={this.proxy}></circle>
               </g>
-            </svg>
-            <svg className="connectionLayer">
-              {this.state.connections.map((conn) =>{
-                return conn.render()
-              })}
             </svg>
           </div>
           <div className="description">

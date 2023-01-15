@@ -40,4 +40,19 @@
   width: 100px;
   height: 100px;
 }
-  
+
+.connection-layer {
+  position: absolute;
+}
+
+.connector-path {
+  stroke: black;
+  stroke-width: 3px;
+  fill: none;
+}
+
+.connector-path-outline {
+  stroke: beige;
+  stroke-width: 4px;
+  fill: none;
+}
