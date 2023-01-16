@@ -19,7 +19,7 @@ class Connection extends React.Component {
     this.state ={
       vbx: 0,
       vby: 0,
-    }
+    };
   }
   
   update() {
@@ -142,7 +142,6 @@ class Connection extends React.Component {
     }
   }
 
-  
   render(){
     console.log("now rendering...");
     return (

@@ -31,12 +31,12 @@ class Node extends React.Component {
   componentDidMount() {
     this._createDraggable();
     this.api.registerPort({
-      object: this,
-      element: this.outPort.current,
+      parentNode: this,
+      element: this.outPort.current.parentElement,
     });
     this.api.registerPort({
-      object: this,
-      element: this.inPort.current,
+      parentNode: this,
+      element: this.inPort.current.parentElement,
     });
   }
   componentDidUpdate() {
@@ -56,16 +56,16 @@ class Node extends React.Component {
             })}
           </svg>
           <svg className="port" style={{position:'absolute'}}>
-            <g className="input-field" transform="translate(0, 0)" drag-data="inPort">
-              <g className="port">
+            <g className="input-field" transform="translate(0, 0)">
+              <g className="port" drag-data="inPort">
                 <circle className="port-outer" cx="5" cy="10" r="7.5"/>
                 <circle className="port-inner" cx="5" cy="10" r="5"/>
                 <circle className="port-scrim" cx="5" cy="10" r="7.5" ref={this.inPort}/>
               </g>
               <text className="port-label" x="25" y="14">Input</text>
             </g>
-            <g className="output-field" transform="translate(0, 0)" drag-data="outPort"  >
-              <g className="port">
+            <g className="output-field" transform="translate(0, 0)">
+              <g className="port" drag-data="outPort">
                 <circle className="port-outer" cx="105" cy="10" r="7.5"/>
                 <circle className="port-inner" cx="105" cy="10" r="5"/>
                 <circle className="port-scrim" cx="105" cy="10" r="7.5" ref={this.outPort}/>
@@ -103,11 +103,12 @@ class Node extends React.Component {
 
     if(this.target.type === 'outPort'){
       [this.target.object, this.target.element] = this.api.createConnection(this.outPort.current, null);
-      this.connections.out.push(this.target.object);
+      this.api.registerConnection(this.target.element, this.target.object);
     }
     if(this.target.type === 'inPort'){
       [this.target.object, this.target.element] = this.api.createConnection(null, this.inPort.current);
       this.connections.in.push(this.target.object);
+      this.api.registerConnection(this.target.element, this.target.object);
     }
   }
 
@@ -143,13 +144,24 @@ class Node extends React.Component {
   }
 
   stopDragging(){
-    let result = null;
+    let port = null;
     if(this.target.type === 'inPort' || this.target.type === 'outPort'){
-      result = this.api.hitTest(this.target.element)
+      port = this.api.hitTest(this.target.element)
     }
-    if(result){
-      result.attachConnection(this.target.object, this.target.element);
+    if(port){
+        const data = port.element.getAttribute('drag-data')?.split(":")[0]
+        if(this.target.type === 'inPort' && data === 'outPort'){
+          this.connections.in.push(this.target.object);
+          port.parentNode.attachConnection(this.target.object, this.target.element);
+          return;
+        }
+        if(this.target.type === 'outPort' && data === 'inPort'){
+          this.connections.out.push(this.target.object);
+          port.parentNode.attachConnection(this.target.object, this.target.element);
+          return;
+        }
     }
+    this.api.removeConnection(this.target.element);
   }
 
   attachConnection(conn, handle){

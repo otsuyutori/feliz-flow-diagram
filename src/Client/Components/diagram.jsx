@@ -28,6 +28,23 @@ class Diagram extends React.Component {
       };
     }
 
+    lookupConnection(key){
+      return this.connectionMap.get(key);
+    }
+
+    registerConnection(key, conn){
+      this.connectionMap.set(key, conn);
+    }
+
+    removeConnection(key){
+      const conn = this.lookupConnection(key);
+      const victim = this.state.connections.indexOf(conn);
+      this.setState({
+        connections: this.state.connections.filter((_, index) => (index !== victim)),
+      });
+      this.connectionMap.delete(key);
+    }
+
     registerPort(obj){
       this.ports.push(obj);
     }
@@ -41,7 +58,7 @@ class Diagram extends React.Component {
     hitTest(element){
       for(let port of this.ports){
         if(Draggable.hitTest(element, port.element)){
-          return port.object;
+          return port;
         }
       }
       return null;
@@ -59,7 +76,14 @@ class Diagram extends React.Component {
               <div className="conatiner" drag-data="layer:container" style={{position:'absolute', left:0, top:0, zIndex:1, width:'100%', height:'100%'}}>
                 {this.nodes.map((id) =>{
                     return(
-                      <Node key={id} api={{createConnection : this.createConnection.bind(this), registerPort:this.registerPort.bind(this) ,hitTest: this.hitTest.bind(this)}}/>
+                      <Node key={id} api={{
+                        createConnection : this.createConnection.bind(this),
+                        registerPort:this.registerPort.bind(this),
+                        hitTest: this.hitTest.bind(this),
+                        lookupConnection: this.lookupConnection.bind(this),
+                        registerConnection: this.registerConnection.bind(this),
+                        removeConnection: this.removeConnection.bind(this),
+                      }}/>
                     )
                 })}
               </div>
