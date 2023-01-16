@@ -21,7 +21,7 @@ let NavBar(host:string) =
                                                     prop.className "icon is-small"
                                                     prop.children [
                                                         Html.i [
-                                                            prop.className "fas fa-image"
+                                                            prop.className "fas fa-house"
                                                             prop.ariaHidden true
                                                         ]
                                                     ]
@@ -36,19 +36,19 @@ let NavBar(host:string) =
                                 Html.li [
                                     prop.children [
                                         Html.a [
-                                            prop.href (host + "/#youtube")
+                                            prop.href (host + "/#diagram")
                                             prop.children [
                                                 Html.span [
                                                     prop.className "icon is-small"
                                                     prop.children [
                                                         Html.i [
-                                                            prop.className "fas fa-film"
+                                                            prop.className "fas fa-bird"
                                                             prop.ariaHidden true
                                                         ]
                                                     ]
                                                 ]
                                                 Html.span [
-                                                    prop.text "Videos"
+                                                    prop.text "Diagrams"
                                                 ]
                                             ]
                                         ]

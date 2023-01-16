@@ -2,7 +2,7 @@ module Client.Router
 
 open Feliz
 open Feliz.Router
-open Client.Video
+open Client.Diagram
 open Shared.Types
 
 [<ReactComponent>]
@@ -13,7 +13,7 @@ let Router(model : Model) =
         router.children [
             match currentUrl with
             | [ ] -> Html.h1 "Index"
-            | ["youtube"] -> Video(model.counter.Value ,model.videoId.Value)
+            | ["diagram"] -> Diagram()
             | otherwise -> Html.h1 "Not found"
         ]
     ]

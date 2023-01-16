@@ -13,7 +13,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include=".\Components\Component.fs" />
-    <Compile Include="Video.fs" />
+    <Compile Include="Diagram.fs" />
     <Compile Include="Router.fs" />
     <Compile Include="Index.fs" />
   </ItemGroup>
