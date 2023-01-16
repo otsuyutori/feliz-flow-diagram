@@ -1,10 +1,10 @@
 .draggable {
-    height: 100px;
-    width: 100px;
-    background: blue;
-    border-radius: 10px;
+    height: 80px;
+    width: 150px;
+    background: rgb(110, 110, 158);
+    border-radius: 5px;
     margin: 5px;
-    color: white;
+    color: rgb(0, 0, 0);
     font-size: 20px;
     padding: 10px;
 }
@@ -53,4 +53,28 @@
   stroke: beige;
   stroke-width: 4px;
   fill: none;
+}
+
+.port-container {
+  width: 16px;
+  height: 16px;
+}
+
+.node-row-component {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+.node-row-ingredient {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+}
+.node-component {
+  font-size: medium;
+  text-align: left;
+}
+.node-ingredient {
+  font-size: medium;
+  text-align: right;
 }

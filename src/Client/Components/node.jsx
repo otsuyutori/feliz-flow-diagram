@@ -19,9 +19,6 @@ class Node extends React.Component {
     this.inPort = React.createRef();
     this.proxy = React.createRef();
     this.currentConnection = null;
-    this.state = {
-      connections: [],
-    };
     this.connections = {
       in:[],
       out:[],
@@ -50,37 +47,52 @@ class Node extends React.Component {
     <>
       <div className="container" drag-data="base" style={{width : 'fit-content', height: 'fit-content'}} ref={this.ref}> 
         <div className="is-flex-direction-column is-align-content-center" style={{width : 'fit-content', height: 'fit-content'}}>
-          <svg style={{position:'absolute'}}>
-            {this.state.connections.map((conn) =>{
-              return conn.render()
-            })}
-          </svg>
-          <svg className="port" style={{position:'absolute'}}>
-            <g className="input-field" transform="translate(0, 0)">
-              <g className="port" drag-data="inPort">
-                <circle className="port-outer" cx="5" cy="10" r="7.5"/>
-                <circle className="port-inner" cx="5" cy="10" r="5"/>
-                <circle className="port-scrim" cx="5" cy="10" r="7.5" ref={this.inPort}/>
-              </g>
-              <text className="port-label" x="25" y="14">Input</text>
-            </g>
-            <g className="output-field" transform="translate(0, 0)">
-              <g className="port" drag-data="outPort">
-                <circle className="port-outer" cx="105" cy="10" r="7.5"/>
-                <circle className="port-inner" cx="105" cy="10" r="5"/>
-                <circle className="port-scrim" cx="105" cy="10" r="7.5" ref={this.outPort}/>
-              </g>
-              <text className="port-label" x="20" y="14">Output</text>
-            </g>
-            <g>
-              <circle cx={0} cy={0} r={10} ref={this.proxy}></circle>
-            </g>
-          </svg>
           <div className="draggable">
+            <div className="node-row-component">
+              <svg className="port-container">
+                <g className="input-field" transform="translate(0, 0)">
+                  <g className="port" drag-data="inPort">
+                    <circle className="port-outer" cx="8" cy="7" r="7.5"/>
+                    <circle className="port-inner" cx="8" cy="7" r="5"/>
+                    <circle className="port-scrim" cx="8" cy="7" r="7.5" ref={this.inPort}/>
+                  </g>
+                </g>
+              </svg>
+              <div className="node-component">完成品</div>
+            </div>
+            <div className="node-row-ingredient">
+              <div className="node-ingredient">原料1</div>
+              <svg className="port-container">
+                <g className="output-field" transform="translate(0, 0)">
+                  <g className="port" drag-data="outPort">
+                    <circle className="port-outer" cx="8" cy="7" r="7.5"/>
+                    <circle className="port-inner" cx="8" cy="7" r="5"/>
+                    <circle className="port-scrim" cx="8" cy="7" r="7.5" ref={this.outPort}/>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <div className="node-row-ingredient">
+              <div className="node-ingredient">原料2</div>
+              <svg className="port-container">
+                <g className="output-field" transform="translate(0, 0)">
+                  <g className="port" drag-data="outPort">
+                    <circle className="port-outer" cx="8" cy="7" r="7.5"/>
+                    <circle className="port-inner" cx="8" cy="7" r="5"/>
+                    <circle className="port-scrim" cx="8" cy="7" r="7.5" ref={this.outPort}/>
+                  </g>
+                </g>
+              </svg>
+            </div>
           </div>
           <div className="description">
             これは説明
           </div>
+          <svg>
+            <g>
+              <circle cx={0} cy={0} r={10} ref={this.proxy}></circle>
+            </g>
+          </svg>
         </div>
       </div>
     </>
