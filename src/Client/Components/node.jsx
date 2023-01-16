@@ -107,7 +107,6 @@ class Node extends React.Component {
     }
     if(this.target.type === 'inPort'){
       [this.target.object, this.target.element] = this.api.createConnection(null, this.inPort.current);
-      this.connections.in.push(this.target.object);
       this.api.registerConnection(this.target.element, this.target.object);
     }
   }
@@ -146,9 +145,8 @@ class Node extends React.Component {
   stopDragging(){
     let port = null;
     if(this.target.type === 'inPort' || this.target.type === 'outPort'){
-      port = this.api.hitTest(this.target.element)
-    }
-    if(port){
+      port = this.api.hitTest(this.target.element);
+      if(port && this !== port.parentNode){
         const data = port.element.getAttribute('drag-data')?.split(":")[0]
         if(this.target.type === 'inPort' && data === 'outPort'){
           this.connections.in.push(this.target.object);
@@ -160,6 +158,7 @@ class Node extends React.Component {
           port.parentNode.attachConnection(this.target.object, this.target.element);
           return;
         }
+      }
     }
     this.api.removeConnection(this.target.element);
   }
