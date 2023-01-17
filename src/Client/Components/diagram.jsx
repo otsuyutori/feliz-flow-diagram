@@ -83,7 +83,8 @@ class Diagram extends React.Component {
                         lookupConnection: this.lookupConnection.bind(this),
                         registerConnection: this.registerConnection.bind(this),
                         removeConnection: this.removeConnection.bind(this),
-                      }}/>
+                      }}
+                        ingredients={["大豆", "小麦粉", "きなこ"]}/>
                     )
                 })}
               </div>

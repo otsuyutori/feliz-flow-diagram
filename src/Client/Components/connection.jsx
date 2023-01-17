@@ -29,11 +29,11 @@ class Connection extends React.Component {
     const ogsy = parseFloat(gsap.getProperty(output, 'cy'));
     const igsx = parseFloat(gsap.getProperty(input, 'cx'));
     const igsy = parseFloat(gsap.getProperty(input, 'cy'));
-    const x1 = ogsx;
-    const y1 = ogsy;
+    const x1 = igsx;
+    const y1 = igsy;
 
-    const x4 = igsx;
-    const y4 = igsy;
+    const x4 = ogsx;
+    const y4 = ogsy;
   
     const dx = Math.abs(x1 - x4) * this.bezierWeight;
     

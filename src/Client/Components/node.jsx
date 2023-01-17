@@ -4,6 +4,8 @@ import { gsap } from "gsap";
 import { Tween } from "gsap/gsap-core";
 import { Draggable } from "gsap/Draggable";
 import "./flowdiagram.css"
+import InPort from "./inPort.jsx";
+import { typographyVariant } from "@mui/system";
 
 
 gsap.registerPlugin(Draggable);
@@ -16,7 +18,8 @@ class Node extends React.Component {
     this.api = props.api;
     this.draggable = null;
     this.outPort = React.createRef();
-    this.inPort = React.createRef();
+    this.ingredients = props.ingredients;
+    this.inPortRefs = [];
     this.proxy = React.createRef();
     this.currentConnection = null;
     this.connections = {
@@ -31,10 +34,6 @@ class Node extends React.Component {
       parentNode: this,
       element: this.outPort.current.parentElement,
     });
-    this.api.registerPort({
-      parentNode: this,
-      element: this.inPort.current.parentElement,
-    });
   }
   componentDidUpdate() {
 //    this._createDraggable();
@@ -47,46 +46,31 @@ class Node extends React.Component {
     <>
       <div className="container" drag-data="base" style={{width : 'fit-content', height: 'fit-content'}} ref={this.ref}> 
         <div className="is-flex-direction-column is-align-content-center" style={{width : 'fit-content', height: 'fit-content'}}>
+          <div className="description">
+            タイトル1
+          </div>
           <div className="draggable">
             <div className="node-row-component">
               <svg className="port-container">
                 <g className="input-field" transform="translate(0, 0)">
-                  <g className="port" drag-data="inPort">
+                  <g className="port" drag-data="outPort">
                     <circle className="port-outer" cx="8" cy="7" r="7.5"/>
                     <circle className="port-inner" cx="8" cy="7" r="5"/>
-                    <circle className="port-scrim" cx="8" cy="7" r="7.5" ref={this.inPort}/>
+                    <circle className="port-scrim" cx="8" cy="7" r="7.5" ref={this.outPort}/>
                   </g>
                 </g>
               </svg>
               <div className="node-component">完成品</div>
             </div>
-            <div className="node-row-ingredient">
-              <div className="node-ingredient">原料1</div>
-              <svg className="port-container">
-                <g className="output-field" transform="translate(0, 0)">
-                  <g className="port" drag-data="outPort">
-                    <circle className="port-outer" cx="8" cy="7" r="7.5"/>
-                    <circle className="port-inner" cx="8" cy="7" r="5"/>
-                    <circle className="port-scrim" cx="8" cy="7" r="7.5" ref={this.outPort}/>
-                  </g>
-                </g>
-              </svg>
-            </div>
-            <div className="node-row-ingredient">
-              <div className="node-ingredient">原料2</div>
-              <svg className="port-container">
-                <g className="output-field" transform="translate(0, 0)">
-                  <g className="port" drag-data="outPort">
-                    <circle className="port-outer" cx="8" cy="7" r="7.5"/>
-                    <circle className="port-inner" cx="8" cy="7" r="5"/>
-                    <circle className="port-scrim" cx="8" cy="7" r="7.5" ref={this.outPort}/>
-                  </g>
-                </g>
-              </svg>
-            </div>
-          </div>
-          <div className="description">
-            これは説明
+            {this.ingredients.map((ingredient, index)=>{
+              const ref = React.createRef();
+              this.inPortRefs.push(ref);
+              return(
+                <>
+                  <InPort _ref={ref} ingredient={ingredient} api={{registerPort:this.api.registerPort}} parentnode={this} index={index}></InPort>
+                </>
+              );
+            })}
           </div>
           <svg>
             <g>
@@ -110,7 +94,7 @@ class Node extends React.Component {
       object : null,
       element  : target,
       type     : type,
-      id: id,
+      id:id,
     }
 
     if(this.target.type === 'outPort'){
@@ -118,7 +102,7 @@ class Node extends React.Component {
       this.api.registerConnection(this.target.element, this.target.object);
     }
     if(this.target.type === 'inPort'){
-      [this.target.object, this.target.element] = this.api.createConnection(null, this.inPort.current);
+      [this.target.object, this.target.element] = this.api.createConnection(null, this.inPortRefs[this.target.id]?.current);
       this.api.registerConnection(this.target.element, this.target.object);
     }
   }
@@ -193,7 +177,7 @@ class Node extends React.Component {
     this.stopDragging = this.stopDragging.bind(this);
     this.draggable = new Draggable(this.proxy.current, {
       allowContextMenu: true,
-      trigger: [this.ref.current ,this.inPort.current, this.outPort.current],
+      trigger: [this.ref.current ,...(this.inPortRefs.map(item => item.current)), this.outPort.current],
       onPress: this.prepareTarget,
       onDrag: this.dragTarget,
       onDragEnd: this.stopDragging,
