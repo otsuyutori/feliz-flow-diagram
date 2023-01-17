@@ -18,8 +18,10 @@ class Node extends React.Component {
     this.api = props.api;
     this.draggable = null;
     this.outPort = React.createRef();
-    this.ingredients = props.ingredients;
     this.inPortRefs = [];
+    this.ingredients = props.ingredients;
+    this.component = props.component;
+    this.label = props.label;
     this.proxy = React.createRef();
     this.currentConnection = null;
     this.connections = {
@@ -47,7 +49,7 @@ class Node extends React.Component {
       <div className="container" drag-data="base" style={{width : 'fit-content', height: 'fit-content'}} ref={this.ref}> 
         <div className="is-flex-direction-column is-align-content-center" style={{width : 'fit-content', height: 'fit-content'}}>
           <div className="description">
-            タイトル1
+            {this.label}
           </div>
           <div className="draggable">
             <div className="node-row-component">
@@ -60,7 +62,7 @@ class Node extends React.Component {
                   </g>
                 </g>
               </svg>
-              <div className="node-component">完成品</div>
+              <div className="node-component">{this.component}</div>
             </div>
             {this.ingredients.map((ingredient, index)=>{
               const ref = React.createRef();

@@ -74,9 +74,7 @@ class Diagram extends React.Component {
           <div className="diagram-container" style={{overflow: 'hidden'}}>
             <div className="diagram-canvas">
               <div className="conatiner" drag-data="layer:container" style={{position:'absolute', left:0, top:0, zIndex:1, width:'100%', height:'100%'}}>
-                {this.nodes.map((id) =>{
-                    return(
-                      <Node key={id} api={{
+                      <Node key={0} api={{
                         createConnection : this.createConnection.bind(this),
                         registerPort:this.registerPort.bind(this),
                         hitTest: this.hitTest.bind(this),
@@ -84,9 +82,86 @@ class Diagram extends React.Component {
                         registerConnection: this.registerConnection.bind(this),
                         removeConnection: this.removeConnection.bind(this),
                       }}
-                        ingredients={["大豆", "小麦粉", "きなこ"]}/>
-                    )
-                })}
+                        component = "スポンジケーキ"
+                        label = "購入"
+                        ingredients={[]}/>
+                      <Node key={1} api={{
+                        createConnection : this.createConnection.bind(this),
+                        registerPort:this.registerPort.bind(this),
+                        hitTest: this.hitTest.bind(this),
+                        lookupConnection: this.lookupConnection.bind(this),
+                        registerConnection: this.registerConnection.bind(this),
+                        removeConnection: this.removeConnection.bind(this),
+                      }}
+                        component = "生クリーム"
+                        label = "泡立て"
+                        ingredients={["生クリーム"]}/>
+                      <Node key={2} api={{
+                        createConnection : this.createConnection.bind(this),
+                        registerPort:this.registerPort.bind(this),
+                        hitTest: this.hitTest.bind(this),
+                        lookupConnection: this.lookupConnection.bind(this),
+                        registerConnection: this.registerConnection.bind(this),
+                        removeConnection: this.removeConnection.bind(this),
+                      }}
+                        component = "ケーキ台"
+                        label = "塗る"
+                        ingredients={["クリーム", "スポンジケージ"]}/>
+                      <Node key={3} api={{
+                        createConnection : this.createConnection.bind(this),
+                        registerPort:this.registerPort.bind(this),
+                        hitTest: this.hitTest.bind(this),
+                        lookupConnection: this.lookupConnection.bind(this),
+                        registerConnection: this.registerConnection.bind(this),
+                        removeConnection: this.removeConnection.bind(this),
+                      }}
+                        component = "チョコレートケーキ"
+                        label = "トッピング"
+                        ingredients={["ケーキ台", "いちご","チョコレート"]}/>
+                      <Node key={4} api={{
+                        createConnection : this.createConnection.bind(this),
+                        registerPort:this.registerPort.bind(this),
+                        hitTest: this.hitTest.bind(this),
+                        lookupConnection: this.lookupConnection.bind(this),
+                        registerConnection: this.registerConnection.bind(this),
+                        removeConnection: this.removeConnection.bind(this),
+                      }}
+                        component = "いちご"
+                        label = "洗う"
+                        ingredients={["いちご"]}/>
+                      <Node key={5} api={{
+                        createConnection : this.createConnection.bind(this),
+                        registerPort:this.registerPort.bind(this),
+                        hitTest: this.hitTest.bind(this),
+                        lookupConnection: this.lookupConnection.bind(this),
+                        registerConnection: this.registerConnection.bind(this),
+                        removeConnection: this.removeConnection.bind(this),
+                      }}
+                        component = "いちご"
+                        label = "購入"
+                        ingredients={[]}/>
+                      <Node key={6} api={{
+                        createConnection : this.createConnection.bind(this),
+                        registerPort:this.registerPort.bind(this),
+                        hitTest: this.hitTest.bind(this),
+                        lookupConnection: this.lookupConnection.bind(this),
+                        registerConnection: this.registerConnection.bind(this),
+                        removeConnection: this.removeConnection.bind(this),
+                      }}
+                        component = "刻みチョコレート"
+                        label = "刻む"
+                        ingredients={["板チョコレート"]}/>
+                      <Node key={7} api={{
+                        createConnection : this.createConnection.bind(this),
+                        registerPort:this.registerPort.bind(this),
+                        hitTest: this.hitTest.bind(this),
+                        lookupConnection: this.lookupConnection.bind(this),
+                        registerConnection: this.registerConnection.bind(this),
+                        removeConnection: this.removeConnection.bind(this),
+                      }}
+                        component = "板チョコレート"
+                        label = "購入"
+                        ingredients={[]}/>
               </div>
               <svg ref={this.connLayer} style={{position:'absolute', left:0, top:0, zIndex:0, width:'100%', height:'100%'}}>
                 <g className="connections">
