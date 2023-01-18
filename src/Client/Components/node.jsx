@@ -6,6 +6,7 @@ import { Draggable } from "gsap/Draggable";
 import "./flowdiagram.css"
 import InPort from "./inPort.jsx";
 import { typographyVariant } from "@mui/system";
+import { Hidden } from "@mui/material";
 
 
 gsap.registerPlugin(Draggable);
@@ -74,7 +75,7 @@ class Node extends React.Component {
               );
             })}
           </div>
-          <svg>
+          <svg style={{height:1, width:1}}>
             <g>
               <circle cx={0} cy={0} r={10} ref={this.proxy}></circle>
             </g>

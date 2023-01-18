@@ -93,9 +93,20 @@ class Diagram extends React.Component {
                         registerConnection: this.registerConnection.bind(this),
                         removeConnection: this.removeConnection.bind(this),
                       }}
-                        component = "生クリーム"
-                        label = "泡立て"
+                        component = "ホイップクリーム"
+                        label = "ホイップ"
                         ingredients={["生クリーム"]}/>
+                      <Node key={9} api={{
+                        createConnection : this.createConnection.bind(this),
+                        registerPort:this.registerPort.bind(this),
+                        hitTest: this.hitTest.bind(this),
+                        lookupConnection: this.lookupConnection.bind(this),
+                        registerConnection: this.registerConnection.bind(this),
+                        removeConnection: this.removeConnection.bind(this),
+                      }}
+                        component = "生クリーム"
+                        label = "購入"
+                        ingredients={[]}/>
                       <Node key={2} api={{
                         createConnection : this.createConnection.bind(this),
                         registerPort:this.registerPort.bind(this),
