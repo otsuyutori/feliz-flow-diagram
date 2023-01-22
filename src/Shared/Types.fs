@@ -11,7 +11,7 @@ type Model =
         { 
           counter = None
           videoId = None
-         }
+        }
 
 type ProcessModel =
   {
@@ -35,7 +35,8 @@ type ComponentModel =
 type NodeModel =
   {
     id:string
-    compo:option<ComponentModel>
+    name: string
+    compo:ComponentModel option
     ingre:IngredientModel list
     proc:ProcessModel
   }
@@ -43,5 +44,7 @@ type NodeModel =
 type ProductModel = 
   {
     id:string
+    name: string
     nodes:NodeModel
   }
+  

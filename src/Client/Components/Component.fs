@@ -1,6 +1,7 @@
 module Client.Component
 
 open Feliz
+open Shared.Types
 
 type Components =
 
@@ -37,4 +38,4 @@ type Components =
     static member MUITextField(id: string, label: string, text : string, setText: string -> unit) = React.imported ()
 
     [<ReactComponent(import = "default", from = "./Components/diagram.jsx")>]
-    static member Diagram(key: string) = React.imported ()
+    static member Diagram(key: string, product : ProductModel) = React.imported ()
