@@ -15,27 +15,27 @@ type Model =
 
 type ProcessModel =
   {
-    id:string
-    name:string
-    mh: float
+    proc_id:string
+    label:string
+    mh:float
+    link:NodeModel option
   }
-
-type IngredientModel = 
+and IngredientModel = 
   {
-    id:string
-    name:string
+    port_id:string
+    label:string
+    link:NodeModel option
   }
-
-type ComponentModel =
+and ComponentModel =
   {
-    id:string
-    name:string
+    port_id:string
+    label:string
+    link:ref<NodeModel> option
   }
-
-type NodeModel =
+and NodeModel =
   {
-    id:string
-    name: string
+    node_id:string
+    label:string
     compo:ComponentModel option
     ingre:IngredientModel list
     proc:ProcessModel
@@ -45,6 +45,6 @@ type ProductModel =
   {
     id:string
     name: string
-    nodes:NodeModel
+    node:NodeModel
   }
   
