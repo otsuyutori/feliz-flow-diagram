@@ -8,5 +8,8 @@ build:
       - yum install nodejs -y
       - dotnet tool restore
       - dotnet run build
+        env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: "Production" 
 run: 
-  command: ASPNETCORE_ENVIRONMENT=Production ./deploy/Server
+  command: ./deploy/Server
