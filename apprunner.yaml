@@ -9,4 +9,4 @@ build:
       - dotnet tool restore
       - dotnet run build
 run: 
-  command: ./deploy/Server
+  command: ASPNETCORE_ENVIRONMENT=Production ./deploy/Server

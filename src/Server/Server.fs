@@ -38,7 +38,7 @@ let port = 8080
 let staticBase env =
     match env with
     | Development -> Path.Combine(__SOURCE_DIRECTORY__,"..","Client/public")
-    | Production -> Path.Combine(__SOURCE_DIRECTORY__,"../..","wwwroot")
+    | Production -> Path.Combine(__SOURCE_DIRECTORY__,"..","..","wwwroot")
 
 let env = getEnv (Environment.GetEnvironmentVariable( "ASPNETCORE_ENVIRONMENT" ))
 
