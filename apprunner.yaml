@@ -1,0 +1,11 @@
+version: 1.0
+runtime: python3 
+build:
+  commands:
+    build:
+      - yum install curl -y
+      - curl -sL https://rpm.nodesource.com/setup_16.x | bash -
+      - yum install nodejs -y
+      - dotnet tool restore
+run: 
+  command: dotnet run serve
