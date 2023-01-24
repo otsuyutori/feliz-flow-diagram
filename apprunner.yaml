@@ -12,4 +12,4 @@ run:
   env:
     - name: ASPNETCORE_ENVIRONMENT
       value: "Production" 
-  command: ./deploy/Server
+  command: dotnet deploy/Server.dll
