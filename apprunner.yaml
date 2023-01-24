@@ -1,5 +1,5 @@
 version: 1.0
-runtime: python3 
+runtime: dotnet6 
 build:
   commands:
     build:
