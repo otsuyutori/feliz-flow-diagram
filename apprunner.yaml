@@ -7,5 +7,6 @@ build:
       - curl -sL https://rpm.nodesource.com/setup_16.x | bash -
       - yum install nodejs -y
       - dotnet tool restore
+      - dotnet run build
 run: 
-  command: dotnet run serve
+  command: ./deploy/Server
