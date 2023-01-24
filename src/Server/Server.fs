@@ -30,10 +30,10 @@ let getEnv env =
 
 let port = 8080
 
-// let baseUrls env =
-//     match env with
-//     | Development -> "http://localhost:" + port.ToString()
-//     | Production -> "http://localhost"
+let baseUrls env =
+    match env with
+    | Development -> "http://localhost:" + port.ToString()
+    | Production -> "https://ppqyhd87bz.ap-northeast-1.awsapprunner.com"
 
 let staticBase env =
     match env with
@@ -43,8 +43,7 @@ let staticBase env =
 let env = getEnv (Environment.GetEnvironmentVariable( "ASPNETCORE_ENVIRONMENT" ))
 
 let staticPath = staticBase env
-//let baseUrl = baseUrls env
-let baseUrl = "http://localhost:8080"
+let baseUrl = baseUrls env
 
 let initState: Model = {
   counter = Some 42
