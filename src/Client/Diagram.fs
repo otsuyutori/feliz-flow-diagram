@@ -4,41 +4,6 @@ open Feliz
 open Shared.Types
 open Client.Component
 
-// type ProcessModel =
-//   {
-//     port_id:string
-//     label:string
-//     mh: float
-//     link:NodeModel
-//   }
-// and IngredientModel = 
-//   {
-//     port_id:string
-//     label:string
-//     link:NodeModel
-//   }
-// and ComponentModel =
-//   {
-//     port_id:string
-//     label:string
-//     link:NodeModel
-//   }
-// and NodeModel =
-//   {
-//     node_id:string
-//     label: string
-//     compo:ComponentModel option
-//     ingre:IngredientModel list
-//     proc:ProcessModel
-//   }
-
-// type ProductModel = 
-//   {
-//     id:string
-//     name: string
-//     node:NodeModel
-//   }
-
 let product: ProductModel =
     {
         id = "Product1";
@@ -66,7 +31,7 @@ let product: ProductModel =
             proc = {
                 proc_id="Process1";
                 label="Process";
-                mh=0.0;
+                mh=1.0;
                 link = None
             }
         }
