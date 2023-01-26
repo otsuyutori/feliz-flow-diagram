@@ -31,16 +31,16 @@ class Diagram extends React.Component {
 
     bfsNodes(product){
       let tier = [];
-      tier = [product.node];
+      tier = [product];
       for(;;){
         this.nodes.push([]);
         let tempTier = [];
-        let node = null;
-        while(node = tier.pop()){
-          for(let ingre of this._getList(node.ingre, [])){
+        let prod = null;
+        while(prod = tier.pop()){
+          for(let ingre of this._getList(prod.node.ingre, [])){
             tempTier.push(ingre.link);
           }
-          this.nodes[this.nodes.length-1].push(node);
+          this.nodes[this.nodes.length-1].push(prod.node);
         }
         tier = tempTier;
         if(tier.length === 0){

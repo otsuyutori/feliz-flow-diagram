@@ -24,13 +24,13 @@ and IngredientModel =
   {
     port_id:string
     label:string
-    link:NodeModel option
+    link:ProductModel option
   }
 and ComponentModel =
   {
     port_id:string
     label:string
-    link:ref<NodeModel> option
+    link:ProductModel option
   }
 and NodeModel =
   {
@@ -40,8 +40,7 @@ and NodeModel =
     ingre:IngredientModel list
     proc:ProcessModel
   }
-
-type ProductModel = 
+and ProductModel = 
   {
     id:string
     name: string
