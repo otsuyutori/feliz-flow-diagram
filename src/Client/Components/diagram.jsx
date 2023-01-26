@@ -94,11 +94,11 @@ class Diagram extends React.Component {
         <>
           <div className="diagram-container" style={{overflow: 'hidden'}}>
             <div className="diagram-canvas">
-              <div className="conatiner" drag-data="layer:container" style={{position:'absolute', left:0, top:0, zIndex:1, width:'100%', height:'100%'}}>
+              <div className="node-container" drag-data="layer:container" style={{position:'absolute', left:0, top:0, zIndex:1, width:'100%', height:'100%'}}>
                 {
                   this.nodes.map(column=>{
                     return (
-                      <div className="container-column">
+                      <div className="node-container-column">
                         {
                           column.map(node=>{
                             return (

@@ -38,12 +38,12 @@
   position: absolute;
 }
 
-.container {
+.node-container {
   display: flex;
   flex-direction: row;
 }
 
-.container-column {
+.node-container-column {
   display: flex;
   flex-direction: column;
 }
