@@ -95,44 +95,31 @@ class Diagram extends React.Component {
           <div className="diagram-container" style={{overflow: 'hidden'}}>
             <div className="diagram-canvas">
               <div className="conatiner" drag-data="layer:container" style={{position:'absolute', left:0, top:0, zIndex:1, width:'100%', height:'100%'}}>
-                <div className="container-column">
-                  {/* <Node key={0} api={{
-                    createConnection : this.createConnection.bind(this),
-                    registerPort:this.registerPort.bind(this),
-                    hitTest: this.hitTest.bind(this),
-                    lookupConnection: this.lookupConnection.bind(this),
-                    registerConnection: this.registerConnection.bind(this),
-                    removeConnection: this.removeConnection.bind(this),
-                  }}
-                    component = "スポンジケーキ"
-                    label = "購入"
-                    ingredients={[]}/> */}
-                  {
-                    this.nodes.map(column=>{
-                      return (
-                        <div className="container-column">
-                          {
-                            column.map(node=>{
-                              return (
-                                <Node key={node.id} api={{
-                                  createConnection : this.createConnection.bind(this),
-                                  registerPort:this.registerPort.bind(this),
-                                  hitTest: this.hitTest.bind(this),
-                                  lookupConnection: this.lookupConnection.bind(this),
-                                  registerConnection: this.registerConnection.bind(this),
-                                  removeConnection: this.removeConnection.bind(this),
-                                }}
-                                  component = {node.compo.label}
-                                  label = {node.proc.label}
-                                  ingredients={[...node.ingre.map(item=>{item.label})]}/>
-                              )
-                            })
-                          }
-                        </div> 
-                      );
-                    }
-                  )}
-                </div>
+                {
+                  this.nodes.map(column=>{
+                    return (
+                      <div className="container-column">
+                        {
+                          column.map(node=>{
+                            return (
+                              <Node key={node.node_id} api={{
+                                createConnection : this.createConnection.bind(this),
+                                registerPort:this.registerPort.bind(this),
+                                hitTest: this.hitTest.bind(this),
+                                lookupConnection: this.lookupConnection.bind(this),
+                                registerConnection: this.registerConnection.bind(this),
+                                removeConnection: this.removeConnection.bind(this),
+                              }}
+                                component = {node.compo.label}
+                                label = {node.proc.label}
+                                ingredients={[...(this._getList(node.ingre, []).map(item=>{return item.label;}))]}/>
+                            )
+                          })
+                        }
+                      </div> 
+                    );
+                  }
+                )}
               </div>
               <svg ref={this.connLayer} style={{position:'absolute', left:0, top:0, zIndex:0, width:'100%', height:'100%'}}>
                 <g className="connections">
