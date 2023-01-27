@@ -26,6 +26,7 @@ class Diagram extends React.Component {
       this.state = {
         connections: [],
       };
+      this.initConn = [];
       this.bfsNodes(props.product);
       this.api = {
         createConnection : this.createConnection.bind(this),
@@ -46,7 +47,20 @@ class Diagram extends React.Component {
         let prod = null;
         while(prod = tier.pop()){
           for(let ingre of this._getList(prod.node.ingre, [])){
+            if(ingre.link === undefined){
+              continue;
+            }
             tempTier.push(ingre.link);
+            this.initConn.push({
+              from:{
+                node_id:prod.node.node_id,
+                port_id:ingre.port_id,
+              },
+              to: {
+                node_id:ingre.link.node.node_id,
+                port_id:ingre.link.node.compo.port_id,
+              }
+            });
           }
           this.nodes[this.nodes.length-1].push(prod.node);
         }
@@ -140,7 +154,6 @@ class Diagram extends React.Component {
     }
     _makeMap(fslist, map){
         this._getList(fslist, []).forEach(element => {
-          //dep inj?
             map.set(newElem.key, newElem.props._ref);
         });
     }
