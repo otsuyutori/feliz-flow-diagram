@@ -27,6 +27,14 @@ class Diagram extends React.Component {
         connections: [],
       };
       this.bfsNodes(props.product);
+      this.api = {
+        createConnection : this.createConnection.bind(this),
+        registerPort:this.registerPort.bind(this),
+        hitTest: this.hitTest.bind(this),
+        lookupConnection: this.lookupConnection.bind(this),
+        registerConnection: this.registerConnection.bind(this),
+        removeConnection: this.removeConnection.bind(this),
+      }
     }
 
     bfsNodes(product){
@@ -66,8 +74,9 @@ class Diagram extends React.Component {
       this.connectionMap.delete(key);
     }
 
-    registerPort(obj){
+    registerPort(key ,obj){
       this.ports.push(obj);
+      this.portMap.set(key, obj);
     }
 
     createConnection(from, to){
@@ -94,7 +103,7 @@ class Diagram extends React.Component {
         <>
           <div className="diagram-container" style={{overflow: 'hidden'}}>
             <div className="diagram-canvas">
-              <div className="node-container" drag-data="layer:container" style={{position:'absolute', left:0, top:0, zIndex:1, width:'100%', height:'100%'}}>
+              <div className="node-container" drag-data="layer:container" style={{position:'absolute', left:0, top:0, zIndex:1, width:'500px', height:'500px'}}>
                 {
                   this.nodes.map(column=>{
                     return (
@@ -102,17 +111,12 @@ class Diagram extends React.Component {
                         {
                           column.map(node=>{
                             return (
-                              <Node key={node.node_id} api={{
-                                createConnection : this.createConnection.bind(this),
-                                registerPort:this.registerPort.bind(this),
-                                hitTest: this.hitTest.bind(this),
-                                lookupConnection: this.lookupConnection.bind(this),
-                                registerConnection: this.registerConnection.bind(this),
-                                removeConnection: this.removeConnection.bind(this),
-                              }}
+                              <Node 
+                                key = {node.node_id}
+                                api = {this.api}
                                 component = {node.compo.label}
                                 label = {node.proc.label}
-                                ingredients={[...(this._getList(node.ingre, []).map(item=>{return item.label;}))]}/>
+                                ingredients={[...(this._getList(node.ingre, []).map(ingre=>{return {label:ingre.label, portId:ingre.port_id};}))]}/>
                             )
                           })
                         }
@@ -121,13 +125,13 @@ class Diagram extends React.Component {
                   }
                 )}
               </div>
-              <svg ref={this.connLayer} style={{position:'absolute', left:0, top:0, zIndex:0, width:'100%', height:'100%'}}>
+              <svg ref={this.connLayer} style={{position:'absolute', left:0, top:0, zIndex:0, width:'500px', height:'500px'}}>
                 <g className="connections">
                 {this.state.connections.map((conn) =>{
                   return conn.render()
                 })}
                 </g>
-                <circle className="dragProxy" ref={this.dpRef} cx={0} cy={0} r={10} fill={'red'}></circle>
+                <circle className="dragProxy" ref={this.dpRef} cx={0} cy={0} r={10} fill={'none'}></circle>
               </svg>
             </div>
           </div>

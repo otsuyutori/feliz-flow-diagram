@@ -9,9 +9,10 @@ class InPort extends React.Component {
     this.api = props.api;
     this.parentNode = props.parentnode;
     this.index = props.index;
+    this.portId = props.portId;
   }
   componentDidMount() {
-    this.api.registerPort({
+    this.api.registerPort(this.portId ,{
       parentNode: this.parentNode,
       element: this.ref.current.parentElement,
     });

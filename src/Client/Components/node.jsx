@@ -20,6 +20,7 @@ class Node extends React.Component {
     this.draggable = null;
     this.outPort = React.createRef();
     this.inPortRefs = [];
+    this.outPortId = props.compoPortId;
     this.ingredients = props.ingredients;
     this.component = props.component;
     this.label = props.label;
@@ -33,7 +34,7 @@ class Node extends React.Component {
   }
   componentDidMount() {
     this._createDraggable();
-    this.api.registerPort({
+    this.api.registerPort(this.outPortId ,{
       parentNode: this,
       element: this.outPort.current.parentElement,
     });
@@ -70,7 +71,7 @@ class Node extends React.Component {
               this.inPortRefs.push(ref);
               return(
                 <>
-                  <InPort _ref={ref} ingredient={ingredient} api={{registerPort:this.api.registerPort}} parentnode={this} index={index}></InPort>
+                  <InPort _ref={ref} ingredient={ingredient.label} api={{registerPort:this.api.registerPort}} parentnode={this} index={index} portId={ingredient.portId}></InPort>
                 </>
               );
             })}

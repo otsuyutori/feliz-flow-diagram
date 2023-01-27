@@ -12,18 +12,18 @@ let ingre1: ProductModel =
             node_id="ingre1";
             label="ingre1";
             compo = Some {
-                port_id="Component1";
+                port_id="c2";
                 label="Component";
                 link = None
             };
             ingre = [
                 {
-                    port_id="Ingredient1";
+                    port_id="i3";
                     label="Ingredient";
                     link = None
                 }
                 {
-                    port_id="Ingredient2";
+                    port_id="i4";
                     label="Ingredient2";
                     link = None
                 }
@@ -45,18 +45,18 @@ let ingre2: ProductModel =
             node_id="ingre2";
             label="ingre2";
             compo = Some {
-                port_id="Component1";
+                port_id="c3";
                 label="Component";
                 link = None
             };
             ingre = [
                 {
-                    port_id="Ingredient1";
+                    port_id="i5";
                     label="Ingredient1";
                     link = None
                 }
                 {
-                    port_id="Ingredient2";
+                    port_id="i6";
                     label="Ingredient2";
                     link = None
                 }
@@ -78,18 +78,18 @@ let product: ProductModel =
             node_id="Node1";
             label="Node";
             compo = Some {
-                port_id="Component1";
+                port_id="c1";
                 label="Component";
                 link = None
             };
             ingre = [
                 {
-                    port_id="Ingredient1";
+                    port_id="i1";
                     label="Ingredient";
                     link = Some ingre1
                 }
                 { 
-                    port_id="Ingredient2";
+                    port_id="i2";
                     label="Ingredient2";
                     link = Some ingre2
                 }
