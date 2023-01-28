@@ -29,8 +29,10 @@ class Node extends React.Component {
     this.connections = {
       in:[],
       out:[],
-    }
-
+    };
+    this.ingredients.forEach(item=>{
+      this.inPortRefs[item.portId] = React.createRef();
+    });
   }
   componentDidMount() {
     this._createDraggable();
@@ -57,7 +59,7 @@ class Node extends React.Component {
             <div className="node-row-component">
               <svg className="port-container">
                 <g className="input-field" transform="translate(0, 0)">
-                  <g className="port" drag-data="outPort">
+                  <g className="port" drag-data={'outPort:' + this.outPortId.toString()}>
                     <circle className="port-outer" cx="8" cy="7" r="7.5"/>
                     <circle className="port-inner" cx="8" cy="7" r="5"/>
                     <circle className="port-scrim" cx="8" cy="7" r="7.5" ref={this.outPort}/>
@@ -67,11 +69,9 @@ class Node extends React.Component {
               <div className="node-component">{this.component}</div>
             </div>
             {this.ingredients.map((ingredient, index)=>{
-              const ref = React.createRef();
-              this.inPortRefs.push(ref);
               return(
                 <>
-                  <InPort _ref={ref} ingredient={ingredient.label} api={{registerPort:this.api.registerPort}} parentnode={this} index={index} portId={ingredient.portId}></InPort>
+                  <InPort _ref={this.inPortRefs[ingredient.portId]} ingredient={ingredient.label} api={{registerPort:this.api.registerPort}} parentnode={this} index={index} portId={ingredient.portId}></InPort>
                 </>
               );
             })}
@@ -95,19 +95,19 @@ class Node extends React.Component {
     }
     const [type, id] = dragData.split(":");
     this.target = {
-      object : null,
-      element  : target,
-      type     : type,
-      id:id,
+      object  : null,
+      element : target,
+      type    : type,
+      id      : id,
     }
 
     if(this.target.type === 'outPort'){
       [this.target.object, this.target.element] = this.api.createConnection(this.outPort.current, null);
-      this.api.registerConnection(this.target.element, this.target.object);
+      this.api.registerConnectionByHandle(this.target.element, this.target.object);
     }
     if(this.target.type === 'inPort'){
-      [this.target.object, this.target.element] = this.api.createConnection(null, this.inPortRefs[this.target.id]?.current);
-      this.api.registerConnection(this.target.element, this.target.object);
+      [this.target.object, this.target.element] = this.api.createConnection(null, this.inPortRefs[this.target.id].current);
+      this.api.registerConnectionByHandle(this.target.element, this.target.object);
     }
   }
 
@@ -147,15 +147,37 @@ class Node extends React.Component {
     if(this.target.type === 'inPort' || this.target.type === 'outPort'){
       port = this.api.hitTest(this.target.element);
       if(port && this !== port.parentNode){
-        const data = port.element.getAttribute('drag-data')?.split(":")[0]
+        const [data, portId] = port.element.getAttribute('drag-data')?.split(":")
         if(this.target.type === 'inPort' && data === 'outPort'){
           this.connections.in.push(this.target.object);
           port.parentNode.attachConnection(this.target.object, this.target.element);
+          this.api.poolConnection({
+            from:{
+              nodeId:port.parentNode.id,
+              portId:this.target.id,
+            },
+            to: {
+              nodeId:this.id,
+              portId:portId,
+            },
+            conn:this.target.object,
+          });
           return;
         }
         if(this.target.type === 'outPort' && data === 'inPort'){
           this.connections.out.push(this.target.object);
           port.parentNode.attachConnection(this.target.object, this.target.element);
+          this.api.poolConnection({
+            from:{
+              nodeId:this.id,
+              portId:portId,
+            },
+            to: {
+              nodeId:port.parentNode.id,
+              portId:this.target.id,
+            },
+            conn:this.target.object,
+          });
           return;
         }
       }
@@ -189,7 +211,7 @@ class Node extends React.Component {
     this.stopDragging = this.stopDragging.bind(this);
     this.draggable = new Draggable(this.proxy.current, {
       allowContextMenu: true,
-      trigger: [this.ref.current ,...(this.inPortRefs.map(item => item.current)), this.outPort.current],
+      trigger: [this.ref.current ,...(Object.values(this.inPortRefs).map(item => item.current)), this.outPort.current],
       onPress: this.prepareTarget,
       onDrag: this.dragTarget,
       onDragEnd: this.stopDragging,

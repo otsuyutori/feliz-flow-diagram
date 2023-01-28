@@ -18,7 +18,8 @@ class Diagram extends React.Component {
       this.ports = [];
       this.nodes = [];
       this.nodeMap = new Map();
-      this.connectionMap = new Map();
+      this.connectionPool = [];
+      this.connectionMapByHandle = new Map();
       this.portMap = new Map();
       this.dpRef = React.createRef();
       this.connLayer = React.createRef();
@@ -26,15 +27,15 @@ class Diagram extends React.Component {
       this.state = {
         connections: [],
       };
-      this.initConn = [];
       this.bfsNodes(props.product);
       this.api = {
         createConnection : this.createConnection.bind(this),
         registerPort:this.registerPort.bind(this),
         hitTest: this.hitTest.bind(this),
-        lookupConnection: this.lookupConnection.bind(this),
-        registerConnection: this.registerConnection.bind(this),
+        lookupConnectionByHandle: this.lookupConnectionByHandle.bind(this),
+        registerConnectionByHandle: this.registerConnectionByHandle.bind(this),
         removeConnection: this.removeConnection.bind(this),
+        poolConnection: this.poolConnection.bind(this),
       }
       this.updateCalled = false;
     }
@@ -52,7 +53,7 @@ class Diagram extends React.Component {
               continue;
             }
             tempTier.push(ingre.link);
-            this.initConn.push({
+            this.connectionPool.push({
               from:{
                 nodeId:ingre.link.node.node_id,
                 portId:ingre.link.node.compo.port_id,
@@ -75,28 +76,32 @@ class Diagram extends React.Component {
     }
 
     initCreateConnections(){
-      for(let conn of this.initConn){
+      for(let conn of this.connectionPool){
         const fromElement = this.lookupPort(conn.from.portId)?.element;
         const toElement = this.lookupPort(conn.to.portId)?.element;
         this.createConnection(fromElement, toElement);
       }
     }
 
-    lookupConnection(key){
-      return this.connectionMap.get(key);
+    poolConnection(connObj){
+      this.connectionPool.push(connObj);
     }
 
-    registerConnection(key, conn){
-      this.connectionMap.set(key, conn);
+    lookupConnectionByHandle(key){
+      return this.connectionMapByHandle.get(key);
+    }
+
+    registerConnectionByHandle(key, conn){
+      this.connectionMapByHandle.set(key, conn);
     }
 
     removeConnection(key){
-      const conn = this.lookupConnection(key);
+      const conn = this.lookupConnectionByHandle(key);
       const victim = this.state.connections.indexOf(conn);
       this.setState({
         connections: this.state.connections.filter((_, index) => (index !== victim)),
       });
-      this.connectionMap.delete(key);
+      this.connectionMapByHandle.delete(key);
     }
 
     registerPort(key ,obj){
@@ -117,21 +122,23 @@ class Diagram extends React.Component {
     }
 
     initCreateConnections(){
-      this.initConn.forEach(item=>{
+      this.connectionPool.forEach(item=>{
         item.conn = new Connection();
       })
-      this.setState({connections:this.initConn.map(item=>{return item.conn;})});
+      this.setState({connections:this.connectionPool.map(item=>{return item.conn;})});
     }
 
     initUpdateConnections(){
-      this.initConn.forEach(item=>{
-        item.conn.init(this.lookupPort(item.from.portId)?.element, this.lookupPort(item.to.portId)?.element);
-        if(!this.updateCalled){
+      if(!this.updateCalled){
+        this.connectionPool.forEach(item=>{
           const inNode = this.lookupNode(item.to.nodeId).current;
           inNode.registerConnToIn(item.conn);
           const outNode = this.lookupNode(item.from.nodeId).current;
           outNode.registerConnToOut(item.conn);
-        }
+        });
+      }
+      this.connectionPool.forEach(item=>{
+        item.conn.init(this.lookupPort(item.from.portId)?.element, this.lookupPort(item.to.portId)?.element);
       });
       this.updateCalled=true;
     }

@@ -24,7 +24,7 @@ class InPort extends React.Component {
         <div className="node-ingredient">{this.ingredient}</div>
         <svg className="port-container">
           <g className="output-field" transform="translate(0, 0)">
-            <g className="port" drag-data={'inPort:' + this.index.toString()}>
+            <g className="port" drag-data={'inPort:' + this.portId.toString()}>
               <circle className="port-outer" cx="8" cy="7" r="7.5"/>
               <circle className="port-inner" cx="8" cy="7" r="5"/>
               <circle className="port-scrim" cx="8" cy="7" r="7.5" ref={this.ref}/>
