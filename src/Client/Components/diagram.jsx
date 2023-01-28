@@ -53,13 +53,14 @@ class Diagram extends React.Component {
             tempTier.push(ingre.link);
             this.initConn.push({
               from:{
-                node_id:prod.node.node_id,
-                port_id:ingre.port_id,
+                nodeId:prod.node.node_id,
+                portId:ingre.port_id,
               },
               to: {
-                node_id:ingre.link.node.node_id,
-                port_id:ingre.link.node.compo.port_id,
-              }
+                nodeId:ingre.link.node.node_id,
+                portId:ingre.link.node.compo.port_id,
+              },
+              conn:null,
             });
           }
           this.nodes[this.nodes.length-1].push(prod.node);
@@ -68,6 +69,14 @@ class Diagram extends React.Component {
         if(tier.length === 0){
           break;
         }
+      }
+    }
+
+    initCreateConnections(){
+      for(let conn of this.initConn){
+        const fromElement = this.lookupPort(conn.from.portId)?.element;
+        const toElement = this.lookupPort(conn.to.portId)?.element;
+        this.createConnection(fromElement, toElement);
       }
     }
 
@@ -93,6 +102,23 @@ class Diagram extends React.Component {
       this.portMap.set(key, obj);
     }
 
+    lookupPort(key){
+      return this.portMap.get(key);
+    }
+
+    initCreateConnections(){
+      this.initConn.forEach(item=>{
+        item.conn = new Connection();
+      })
+      this.setState({connections:this.initConn.map(item=>{return item.conn;})});
+    }
+
+    initUpdateConnections(){
+      this.initConn.forEach(item=>{
+        item.conn.init(this.lookupPort(item.from.portId)?.element, this.lookupPort(item.to.portId)?.element);
+      });
+    }
+
     createConnection(from, to){
       const newConn = new Connection();
       this.setState({connections:[...this.state.connections, newConn]});
@@ -109,8 +135,10 @@ class Diagram extends React.Component {
     }
 
     componentDidMount(){
+      this.initCreateConnections();
     }
     componentDidUpdate(){
+      this.initUpdateConnections();
     }
     render() {
       return (
@@ -129,6 +157,7 @@ class Diagram extends React.Component {
                                 key = {node.node_id}
                                 api = {this.api}
                                 component = {node.compo.label}
+                                compoPortId = {node.compo.port_id}
                                 label = {node.proc.label}
                                 ingredients={[...(this._getList(node.ingre, []).map(ingre=>{return {label:ingre.label, portId:ingre.port_id};}))]}/>
                             )
