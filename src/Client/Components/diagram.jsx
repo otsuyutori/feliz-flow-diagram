@@ -36,6 +36,7 @@ class Diagram extends React.Component {
         registerConnection: this.registerConnection.bind(this),
         removeConnection: this.removeConnection.bind(this),
       }
+      this.updateCalled = false;
     }
 
     bfsNodes(product){
@@ -63,6 +64,7 @@ class Diagram extends React.Component {
               conn:null,
             });
           }
+          this.nodeMap.set(prod.node.node_id, React.createRef());
           this.nodes[this.nodes.length-1].push(prod.node);
         }
         tier = tempTier;
@@ -106,6 +108,14 @@ class Diagram extends React.Component {
       return this.portMap.get(key);
     }
 
+    registerNode(key, obj){
+      this.nodeMap.set(key, obj);
+    }
+
+    lookupNode(key){
+      return this.nodeMap.get(key);
+    }
+
     initCreateConnections(){
       this.initConn.forEach(item=>{
         item.conn = new Connection();
@@ -116,7 +126,14 @@ class Diagram extends React.Component {
     initUpdateConnections(){
       this.initConn.forEach(item=>{
         item.conn.init(this.lookupPort(item.from.portId)?.element, this.lookupPort(item.to.portId)?.element);
+        if(!this.updateCalled){
+          const inNode = this.lookupNode(item.to.nodeId).current;
+          inNode.registerConnToIn(item.conn);
+          const outNode = this.lookupNode(item.from.nodeId).current;
+          outNode.registerConnToOut(item.conn);
+        }
       });
+      this.updateCalled=true;
     }
 
     createConnection(from, to){
@@ -155,6 +172,7 @@ class Diagram extends React.Component {
                             return (
                               <Node 
                                 key = {node.node_id}
+                                ref = {this.nodeMap.get(node.node_id)}
                                 api = {this.api}
                                 component = {node.compo.label}
                                 compoPortId = {node.compo.port_id}

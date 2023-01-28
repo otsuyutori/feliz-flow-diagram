@@ -163,15 +163,23 @@ class Node extends React.Component {
     this.api.removeConnection(this.target.element);
   }
 
+  registerConnToOut(conn){
+    this.connections.out.push(conn);
+  }
+
+  registerConnToIn(conn){
+    this.connections.in.push(conn);
+  }
+
   attachConnection(conn, handle){
     const[type, _] = handle.getAttribute("drag-data")?.split(":");
     if(type === "inputHandle"){
       conn.attach(handle, null);
-      this.connections.out.push(conn);
+      this.registerConnToOut(conn);
     }
     if(type === "outputHandle"){
       conn.attach(null, handle);
-      this.connections.in.push(conn);
+      this.registerConnToIn(conn);
     }
   }
 
