@@ -153,12 +153,12 @@ class Node extends React.Component {
           port.parentNode.attachConnection(this.target.object, this.target.element);
           this.api.poolConnection({
             from:{
-              nodeId:port.parentNode.id,
-              portId:this.target.id,
-            },
-            to: {
               nodeId:this.id,
               portId:portId,
+            },
+            to: {
+              nodeId:port.parentNode.id,
+              portId:this.target.id,
             },
             conn:this.target.object,
           });
@@ -169,12 +169,12 @@ class Node extends React.Component {
           port.parentNode.attachConnection(this.target.object, this.target.element);
           this.api.poolConnection({
             from:{
-              nodeId:this.id,
-              portId:portId,
-            },
-            to: {
               nodeId:port.parentNode.id,
               portId:this.target.id,
+            },
+            to: {
+              nodeId:this.id,
+              portId:portId,
             },
             conn:this.target.object,
           });
