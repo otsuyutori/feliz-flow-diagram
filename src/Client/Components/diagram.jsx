@@ -53,12 +53,12 @@ class Diagram extends React.Component {
             tempTier.push(ingre.link);
             this.initConn.push({
               from:{
-                nodeId:prod.node.node_id,
-                portId:ingre.port_id,
-              },
-              to: {
                 nodeId:ingre.link.node.node_id,
                 portId:ingre.link.node.compo.port_id,
+              },
+              to: {
+                nodeId:prod.node.node_id,
+                portId:ingre.port_id,
               },
               conn:null,
             });
