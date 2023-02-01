@@ -41,11 +41,18 @@
 .node-container {
   display: flex;
   flex-direction: row;
+  justify-content: flex-start;
 }
 
 .node-container-column {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+}
+
+.node {
+  width:fit-content;
+  height:fit-content; 
 }
 
 .connection-layer {

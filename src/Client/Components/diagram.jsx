@@ -169,7 +169,7 @@ class Diagram extends React.Component {
         <>
           <div className="diagram-container" style={{overflow: 'hidden'}}>
             <div className="diagram-canvas">
-              <div className="node-container" drag-data="layer:container" style={{position:'absolute', left:0, top:0, zIndex:1, width:'500px', height:'500px'}}>
+              <div className="node-container" drag-data="layer:container" style={{position:'absolute', left:0, top:50, zIndex:1, width:'1024px', height:'1024px'}}>
                 {
                   this.nodes.map(column=>{
                     return (
@@ -193,7 +193,7 @@ class Diagram extends React.Component {
                   }
                 )}
               </div>
-              <svg ref={this.connLayer} style={{position:'absolute', left:0, top:0, zIndex:0, width:'500px', height:'500px'}}>
+              <svg ref={this.connLayer} style={{position:'absolute', left:0, top:0, zIndex:0, width:'1024px', height:'1024px'}}>
                 <g className="connections">
                 {this.state.connections.map((conn) =>{
                   return conn.render()

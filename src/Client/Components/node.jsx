@@ -50,7 +50,7 @@ class Node extends React.Component {
   render() {
     return (
     <>
-      <div className="container" drag-data="base" style={{width : 'fit-content', height: 'fit-content'}} ref={this.ref}> 
+      <div className="node" drag-data="base" ref={this.ref}> 
         <div className="is-flex-direction-column is-align-content-center" style={{width : 'fit-content', height: 'fit-content'}}>
           <div className="description">
             {this.label}
